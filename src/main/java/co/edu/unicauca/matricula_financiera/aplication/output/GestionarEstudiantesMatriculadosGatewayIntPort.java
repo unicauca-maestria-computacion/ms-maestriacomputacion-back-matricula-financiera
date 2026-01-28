@@ -8,6 +8,8 @@ import java.util.List;
 public interface GestionarEstudiantesMatriculadosGatewayIntPort {
     List<Estudiante> obtenerEstudiantes(PeriodoAcademico periodo);
     Estudiante obtenerEstudiante(Integer codigo);
+    Boolean existePeriodo(PeriodoAcademico periodo);
+    Boolean existeEstudiante(Integer codigo);
     PeriodoAcademico obtenerPeriodoAcademicoActual();
     PeriodoAcademico agregarNuevoPeriodoAcademico(PeriodoAcademico periodo);
 }

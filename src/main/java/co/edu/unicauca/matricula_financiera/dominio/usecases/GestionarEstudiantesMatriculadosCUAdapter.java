@@ -10,11 +10,11 @@ import co.edu.unicauca.matricula_financiera.aplication.output.GestionarEstudiant
 import java.util.List;
 
 public class GestionarEstudiantesMatriculadosCUAdapter implements GestionarEstudiantesMatriculadosCUIntPort {
-    
+
     private final GestionarEstudiantesMatriculadosGatewayIntPort objGestionarEstudiantesMatriculados;
     private final GestionarComunicacionExternaGatewayIntPort objGestionarComunicacionExternaGatewayIntPort;
     private final FormateadorResultadosIntPort objFormateadorResultados;
-    
+
     public GestionarEstudiantesMatriculadosCUAdapter(
             GestionarEstudiantesMatriculadosGatewayIntPort objGestionarEstudiantesMatriculados,
             GestionarComunicacionExternaGatewayIntPort objGestionarComunicacionExternaGatewayIntPort,
@@ -23,21 +23,34 @@ public class GestionarEstudiantesMatriculadosCUAdapter implements GestionarEstud
         this.objGestionarComunicacionExternaGatewayIntPort = objGestionarComunicacionExternaGatewayIntPort;
         this.objFormateadorResultados = objFormateadorResultados;
     }
-    
+
     @Override
     public List<Estudiante> obtenerEstudiantes(PeriodoAcademico periodo) {
+        if (periodo == null) {
+            this.objFormateadorResultados.errorReglaNegocioViolada("El período académico no puede ser nulo");
+        }
+        if (!objGestionarEstudiantesMatriculados.existePeriodo(periodo)) {
+            this.objFormateadorResultados.errorEntidadNoExiste(
+                    "El período académico " + periodo.getAño() + "-" + periodo.getPeriodo() + " no existe");
+        }
         return objGestionarEstudiantesMatriculados.obtenerEstudiantes(periodo);
     }
-    
+
     @Override
     public Estudiante obtenerEstudiante(Integer codigo) {
+        if (codigo == null) {
+            this.objFormateadorResultados.errorReglaNegocioViolada("El código del estudiante no puede ser nulo");
+        }
+        if (!objGestionarEstudiantesMatriculados.existeEstudiante(codigo)) {
+            this.objFormateadorResultados.errorEntidadNoExiste("El estudiante con código " + codigo + " no existe");
+        }
         return objGestionarEstudiantesMatriculados.obtenerEstudiante(codigo);
     }
-    
+
     @Override
     public Boolean iniciarNuevaMatriculaFinanciera() {
-        // TODO: Implementar la lógica de negocio para iniciar una nueva matrícula financiera
+        // TODO: Implementar la lógica de negocio para iniciar una nueva matrícula
+        // financiera
         return false;
     }
 }
-

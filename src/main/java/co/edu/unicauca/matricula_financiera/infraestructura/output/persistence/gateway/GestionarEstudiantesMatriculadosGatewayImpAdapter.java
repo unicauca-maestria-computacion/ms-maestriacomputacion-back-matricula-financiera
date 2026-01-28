@@ -15,13 +15,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class GestionarEstudiantesMatriculadosGatewayImpAdapter implements GestionarEstudiantesMatriculadosGatewayIntPort {
-    
+public class GestionarEstudiantesMatriculadosGatewayImpAdapter
+        implements GestionarEstudiantesMatriculadosGatewayIntPort {
+
     private final EstudianteReporsitoryInt objEstudiante;
     private final PeriodoAcademicoReporsitoryInt objPeriodoAcademico;
     private final EstudianteMapperPersistencia objMapperEstudiante;
     private final PeriodoAcademicoMapperPersistencia objMapperPeriodoAcademico;
-    
+
     public GestionarEstudiantesMatriculadosGatewayImpAdapter(
             EstudianteReporsitoryInt objEstudiante,
             PeriodoAcademicoReporsitoryInt objPeriodoAcademico,
@@ -32,27 +33,38 @@ public class GestionarEstudiantesMatriculadosGatewayImpAdapter implements Gestio
         this.objMapperEstudiante = objMapperEstudiante;
         this.objMapperPeriodoAcademico = objMapperPeriodoAcademico;
     }
-    
+
     @Override
     public List<Estudiante> obtenerEstudiantes(PeriodoAcademico periodo) {
-        // TODO: Implementar la lógica para obtener estudiantes por periodo académico
-        // Por ahora retorna una lista vacía
-        return List.of();
+        List<EstudianteEntity> estudiantesEntity = objEstudiante.findByPeriodoAcademico(
+                periodo.getPeriodo(), periodo.getAño());
+        return estudiantesEntity.stream()
+                .map(objMapperEstudiante::mappearDeEntityAEstudiante)
+                .toList();
     }
-    
+
     @Override
     public Estudiante obtenerEstudiante(Integer codigo) {
         Optional<EstudianteEntity> estudianteEntity = objEstudiante.findByCodigo(codigo);
         return estudianteEntity.map(objMapperEstudiante::mappearDeEntityAEstudiante).orElse(null);
     }
-    
+
+    @Override
+    public Boolean existePeriodo(PeriodoAcademico periodo) {
+        return objPeriodoAcademico.findByPeriodoAndAño(periodo.getPeriodo(), periodo.getAño()).isPresent();
+    }
+
+    @Override
+    public Boolean existeEstudiante(Integer codigo) {
+        return objEstudiante.findByCodigo(codigo).isPresent();
+    }
+
     @Override
     public PeriodoAcademico obtenerPeriodoAcademicoActual() {
-        // TODO: Implementar la lógica para obtener el periodo académico actual
-        // Por ahora retorna null
-        return null;
+        Optional<PeriodoAcademicoEntity> periodoEntity = objPeriodoAcademico.findTopByOrderByAñoDescPeriodoDesc();
+        return periodoEntity.map(objMapperPeriodoAcademico::mappearDeEntityAPeriodoAcademico).orElse(null);
     }
-    
+
     @Override
     public PeriodoAcademico agregarNuevoPeriodoAcademico(PeriodoAcademico periodo) {
         PeriodoAcademicoEntity periodoEntity = objMapperPeriodoAcademico.mappearPeriodoAcademicoAEntity(periodo);
@@ -60,4 +72,3 @@ public class GestionarEstudiantesMatriculadosGatewayImpAdapter implements Gestio
         return objMapperPeriodoAcademico.mappearDeEntityAPeriodoAcademico(savedEntity);
     }
 }
-

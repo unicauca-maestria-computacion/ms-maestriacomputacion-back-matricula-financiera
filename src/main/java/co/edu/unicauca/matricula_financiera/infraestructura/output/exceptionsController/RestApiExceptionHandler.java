@@ -40,17 +40,17 @@ public class RestApiExceptionHandler {
                                                                 final EntidadYaExisteException ex) {
         Error error = ErrorUtils.crearError(
             "ENTIDAD_YA_EXISTE",
-            ex.getLlaveMensaje(),
+            ex.getMensaje(),
             HttpStatus.CONFLICT.value(),
             req.getRequestURL().toString(),
             req.getMethod()
         );
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
-    
+
     @ExceptionHandler(ReglaNegocioException.class)
-    public ResponseEntity<Error> handleReglaNegocioExcepcion(final HttpServletRequest req, 
-                                                             final ReglaNegocioException ex, 
+    public ResponseEntity<Error> handleReglaNegocioExcepcion(final HttpServletRequest req,
+                                                             final ReglaNegocioException ex,
                                                              final Locale locale) {
         Error error = ErrorUtils.crearError(
             "VIOLACION_REGLA_DE_NEGOCIO",
@@ -61,14 +61,14 @@ public class RestApiExceptionHandler {
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
-    
+
     @ExceptionHandler(EntidadNoExisteException.class)
-    public ResponseEntity<Error> handleEntidadNoExisteException(final HttpServletRequest req, 
-                                                               final EntidadNoExisteException ex, 
+    public ResponseEntity<Error> handleEntidadNoExisteException(final HttpServletRequest req,
+                                                               final EntidadNoExisteException ex,
                                                                final Locale locale) {
         Error error = ErrorUtils.crearError(
             "ENTIDAD_NO_ENCONTRADA",
-            ex.getLlaveMensaje(),
+            ex.getMensaje(),
             HttpStatus.NOT_FOUND.value(),
             req.getRequestURL().toString(),
             req.getMethod()

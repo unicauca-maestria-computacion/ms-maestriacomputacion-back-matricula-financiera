@@ -9,5 +9,7 @@ import java.util.Optional;
 @Repository
 public interface PeriodoAcademicoReporsitoryInt extends JpaRepository<PeriodoAcademicoEntity, Long> {
     Optional<PeriodoAcademicoEntity> findByPeriodoAndAño(Integer periodo, Integer año);
+
+    Optional<PeriodoAcademicoEntity> findTopByOrderByAñoDescPeriodoDesc();
 }
 
