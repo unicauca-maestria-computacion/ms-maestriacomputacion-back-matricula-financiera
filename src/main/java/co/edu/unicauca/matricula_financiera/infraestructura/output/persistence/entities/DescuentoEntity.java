@@ -44,7 +44,7 @@ public class DescuentoEntity {
     private String estado;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "estudiante_id")
+    @JoinColumn(name = "estudiante_id", referencedColumnName = "codigo")
     private EstudianteEntity estudiante;
 }
 

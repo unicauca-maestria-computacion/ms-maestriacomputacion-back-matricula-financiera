@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.util.Date;
 
 @Entity
-@Table(name = "matriculas_financieras")
+@Table(name = "matricula_financiera")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,7 +34,7 @@ public class MatriculaFinancieraEntity {
     private PeriodoAcademicoEntity objPeriodoAcademico;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "estudiante_id")
+    @JoinColumn(name = "estudiante_codigo", referencedColumnName = "codigo")
     private EstudianteEntity estudiante;
 }
 

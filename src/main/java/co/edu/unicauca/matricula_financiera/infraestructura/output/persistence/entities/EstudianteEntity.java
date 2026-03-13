@@ -9,17 +9,14 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "estudiantes")
+@Table(name = "estudiante")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class EstudianteEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    @Column(name = "codigo", unique = true, nullable = false)
+    @Column(name = "codigo", nullable = false)
     private Integer codigo;
     
     @Column(name = "cohorte")
@@ -30,6 +27,9 @@ public class EstudianteEntity {
     
     @Column(name = "semestre_financiero")
     private Integer semestreFinanciero;
+    
+    @Column(name = "persona_id")
+    private Long personaId;
     
     @OneToMany(mappedBy = "estudiante", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MatriculaFinancieraEntity> matriculasFinancieras;

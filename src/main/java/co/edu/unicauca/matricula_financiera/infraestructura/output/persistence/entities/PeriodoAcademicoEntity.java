@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "periodos_academicos")
+@Table(name = "periodo_academico")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,7 +22,7 @@ public class PeriodoAcademicoEntity {
     @Column(name = "periodo")
     private Integer periodo;
     
-    @Column(name = "año")
+    @Column(name = "anio")
     private Integer año;
     
     @OneToMany(mappedBy = "objPeriodoAcademico", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
