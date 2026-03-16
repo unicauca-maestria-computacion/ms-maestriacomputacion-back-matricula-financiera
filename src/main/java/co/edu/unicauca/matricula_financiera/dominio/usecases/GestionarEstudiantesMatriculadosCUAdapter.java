@@ -37,7 +37,7 @@ public class GestionarEstudiantesMatriculadosCUAdapter implements GestionarEstud
     }
 
     @Override
-    public Estudiante obtenerEstudiante(Integer codigo) {
+    public Estudiante obtenerEstudiante(String codigo) {
         if (codigo == null) {
             this.objFormateadorResultados.errorReglaNegocioViolada("El código del estudiante no puede ser nulo");
         }

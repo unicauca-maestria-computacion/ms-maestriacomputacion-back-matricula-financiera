@@ -30,7 +30,7 @@ public class BecaEntity {
     private String titulo;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "estudiante_id", referencedColumnName = "codigo")
-    private EstudianteEntity estudiante;
+    @JoinColumn(name = "estudiante_codigo", referencedColumnName = "codigo")
+    private EstudianteEntity objEstudiante;
 }
 

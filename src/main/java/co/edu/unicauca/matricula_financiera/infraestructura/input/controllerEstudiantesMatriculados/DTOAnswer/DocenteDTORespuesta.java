@@ -11,5 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DocenteDTORespuesta {
     private String nombre;
+    private String apellido;
 }
 

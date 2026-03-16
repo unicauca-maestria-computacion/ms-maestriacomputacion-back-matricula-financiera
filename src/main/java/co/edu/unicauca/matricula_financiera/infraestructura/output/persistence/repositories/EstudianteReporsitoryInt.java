@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface EstudianteReporsitoryInt extends JpaRepository<EstudianteEntity, Long> {
-    Optional<EstudianteEntity> findByCodigo(Integer codigo);
+public interface EstudianteReporsitoryInt extends JpaRepository<EstudianteEntity, Integer> {
+    Optional<EstudianteEntity> findByCodigo(String codigo);
 
     @Query("SELECT DISTINCT e FROM EstudianteEntity e " +
            "JOIN e.matriculasFinancieras mf " +

@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EstudianteDTORespuesta {
-    private Integer codigo;
+    private String codigo;
     private String cohorte;
     private String periodoIngreso;
     private Integer semestreFinanciero;

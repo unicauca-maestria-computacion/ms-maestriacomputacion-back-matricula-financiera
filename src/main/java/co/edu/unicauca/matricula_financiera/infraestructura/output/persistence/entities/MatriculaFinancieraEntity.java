@@ -35,6 +35,6 @@ public class MatriculaFinancieraEntity {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "estudiante_codigo", referencedColumnName = "codigo")
-    private EstudianteEntity estudiante;
+    private EstudianteEntity objEstudiante;
 }
 

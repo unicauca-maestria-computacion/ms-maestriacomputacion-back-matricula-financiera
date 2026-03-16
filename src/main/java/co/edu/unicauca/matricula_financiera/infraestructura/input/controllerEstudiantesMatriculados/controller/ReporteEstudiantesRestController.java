@@ -38,7 +38,7 @@ public class ReporteEstudiantesRestController {
     }
     
     @GetMapping("/{codigo}")
-    public ResponseEntity<EstudianteDTORespuesta> obtenerEstudiante(@PathVariable Integer codigo) {
+    public ResponseEntity<EstudianteDTORespuesta> obtenerEstudiante(@PathVariable String codigo) {
         var estudiante = objGestionarEstudiantesMatriculadosCUInt.obtenerEstudiante(codigo);
         if (estudiante == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

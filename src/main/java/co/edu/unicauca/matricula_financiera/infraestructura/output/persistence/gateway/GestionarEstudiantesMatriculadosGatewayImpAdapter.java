@@ -44,7 +44,7 @@ public class GestionarEstudiantesMatriculadosGatewayImpAdapter
     }
 
     @Override
-    public Estudiante obtenerEstudiante(Integer codigo) {
+    public Estudiante obtenerEstudiante(String codigo) {
         Optional<EstudianteEntity> estudianteEntity = objEstudiante.findByCodigo(codigo);
         return estudianteEntity.map(objMapperEstudiante::mappearDeEntityAEstudiante).orElse(null);
     }
@@ -55,7 +55,7 @@ public class GestionarEstudiantesMatriculadosGatewayImpAdapter
     }
 
     @Override
-    public Boolean existeEstudiante(Integer codigo) {
+    public Boolean existeEstudiante(String codigo) {
         return objEstudiante.findByCodigo(codigo).isPresent();
     }
 

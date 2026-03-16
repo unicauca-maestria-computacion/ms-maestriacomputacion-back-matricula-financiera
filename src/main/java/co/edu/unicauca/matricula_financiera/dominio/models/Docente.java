@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Docente {
     private String nombre;
+    private String apellido;
     private List<Materia> materias;
 }
 

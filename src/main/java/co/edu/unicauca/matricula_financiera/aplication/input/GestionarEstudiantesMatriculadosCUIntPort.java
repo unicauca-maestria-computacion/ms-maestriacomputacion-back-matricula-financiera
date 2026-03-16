@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface GestionarEstudiantesMatriculadosCUIntPort {
     List<Estudiante> obtenerEstudiantes(PeriodoAcademico periodo);
-    Estudiante obtenerEstudiante(Integer codigo);
+    Estudiante obtenerEstudiante(String codigo);
     Boolean iniciarNuevaMatriculaFinanciera();
 }
 
