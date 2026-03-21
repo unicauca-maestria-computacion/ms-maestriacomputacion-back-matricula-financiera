@@ -4,6 +4,7 @@ import co.edu.unicauca.matricula_financiera.infraestructura.output.persistence.e
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -11,5 +12,7 @@ public interface PeriodoAcademicoReporsitoryInt extends JpaRepository<PeriodoAca
     Optional<PeriodoAcademicoEntity> findByPeriodoAndAño(Integer periodo, Integer año);
 
     Optional<PeriodoAcademicoEntity> findTopByOrderByAñoDescPeriodoDesc();
+
+    List<PeriodoAcademicoEntity> findAllByOrderByAñoDescPeriodoDesc();
 }
 

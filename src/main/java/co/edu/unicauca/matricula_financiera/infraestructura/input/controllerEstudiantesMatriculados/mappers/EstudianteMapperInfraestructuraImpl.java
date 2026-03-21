@@ -31,6 +31,9 @@ public class EstudianteMapperInfraestructuraImpl implements EstudianteMapperInfr
         }
         return new EstudianteDTORespuesta(
                 estudiante.getCodigo(),
+                estudiante.getNombre(),
+                estudiante.getApellido(),
+                estudiante.getIdentificacion(),
                 estudiante.getCohorte(),
                 estudiante.getPeriodoIngreso(),
                 estudiante.getSemestreFinanciero(),

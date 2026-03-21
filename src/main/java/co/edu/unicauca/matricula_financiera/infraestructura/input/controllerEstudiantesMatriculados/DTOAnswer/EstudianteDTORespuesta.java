@@ -13,6 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 public class EstudianteDTORespuesta {
     private String codigo;
+    private String nombre;
+    private String apellido;
+    private Integer identificacion;
     private String cohorte;
     private String periodoIngreso;
     private Integer semestreFinanciero;

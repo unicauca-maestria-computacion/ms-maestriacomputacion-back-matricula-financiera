@@ -2,6 +2,7 @@ package co.edu.unicauca.matricula_financiera.infraestructura.input.controllerEst
 
 import co.edu.unicauca.matricula_financiera.aplication.input.GestionarEstudiantesMatriculadosCUIntPort;
 import co.edu.unicauca.matricula_financiera.infraestructura.input.controllerEstudiantesMatriculados.DTOAnswer.EstudianteDTORespuesta;
+import co.edu.unicauca.matricula_financiera.infraestructura.input.controllerEstudiantesMatriculados.DTOAnswer.PeriodoAcademicoDTORespuesta;
 import co.edu.unicauca.matricula_financiera.infraestructura.input.controllerEstudiantesMatriculados.DTOPeticion.PeriodoAcademicoDTOPeticion;
 import co.edu.unicauca.matricula_financiera.infraestructura.input.controllerEstudiantesMatriculados.mappers.EstudianteMapperInfraestructura;
 import co.edu.unicauca.matricula_financiera.infraestructura.input.controllerEstudiantesMatriculados.mappers.PeriodoAcademicoMapperInfraestructura;
@@ -12,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/estudiantes")
+@RequestMapping("/api/gestion-matricula-financiera")
 public class ReporteEstudiantesRestController {
-    
+
     private final GestionarEstudiantesMatriculadosCUIntPort objGestionarEstudiantesMatriculadosCUInt;
     private final EstudianteMapperInfraestructura objMapperEstudiante;
     private final PeriodoAcademicoMapperInfraestructura objMapperPeriodoAcademico;
-    
+
     public ReporteEstudiantesRestController(
             GestionarEstudiantesMatriculadosCUIntPort objGestionarEstudiantesMatriculadosCUInt,
             EstudianteMapperInfraestructura objMapperEstudiante,
@@ -27,8 +28,8 @@ public class ReporteEstudiantesRestController {
         this.objMapperEstudiante = objMapperEstudiante;
         this.objMapperPeriodoAcademico = objMapperPeriodoAcademico;
     }
-    
-    @GetMapping("/periodo")
+
+    @PostMapping("/obtener-estudiantes")
     public ResponseEntity<List<EstudianteDTORespuesta>> obtenerEstudiantes(
             @RequestBody PeriodoAcademicoDTOPeticion periodo) {
         var periodoAcademico = objMapperPeriodoAcademico.mappearDePeticionAPeriodoAcademico(periodo);
@@ -36,8 +37,8 @@ public class ReporteEstudiantesRestController {
         var estudiantesDTO = objMapperEstudiante.mappearDeListaEstudianteARespuesta(estudiantes);
         return new ResponseEntity<>(estudiantesDTO, HttpStatus.OK);
     }
-    
-    @GetMapping("/{codigo}")
+
+    @GetMapping("/obtener-estudiante/{codigo}")
     public ResponseEntity<EstudianteDTORespuesta> obtenerEstudiante(@PathVariable String codigo) {
         var estudiante = objGestionarEstudiantesMatriculadosCUInt.obtenerEstudiante(codigo);
         if (estudiante == null) {
@@ -46,11 +47,19 @@ public class ReporteEstudiantesRestController {
         var estudianteDTO = objMapperEstudiante.mappearDeEstudianteARespuesta(estudiante);
         return new ResponseEntity<>(estudianteDTO, HttpStatus.OK);
     }
-    
-    @PostMapping("/iniciar-matricula")
+
+    @GetMapping("/periodos-academicos")
+    public ResponseEntity<List<PeriodoAcademicoDTORespuesta>> obtenerPeriodosAcademicos() {
+        var periodos = objGestionarEstudiantesMatriculadosCUInt.obtenerPeriodosAcademicos();
+        var periodosDTO = periodos.stream()
+                .map(objMapperPeriodoAcademico::mappearDePeriodoAcademicoARespuesta)
+                .toList();
+        return new ResponseEntity<>(periodosDTO, HttpStatus.OK);
+    }
+
+    @PostMapping("/iniciar")
     public ResponseEntity<Boolean> iniciarNuevaMatriculaFinanciera() {
         Boolean resultado = objGestionarEstudiantesMatriculadosCUInt.iniciarNuevaMatriculaFinanciera();
         return new ResponseEntity<>(resultado, HttpStatus.OK);
     }
 }
-

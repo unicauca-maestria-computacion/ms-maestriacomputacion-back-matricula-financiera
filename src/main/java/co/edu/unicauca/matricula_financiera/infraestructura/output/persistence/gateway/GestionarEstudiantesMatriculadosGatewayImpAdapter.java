@@ -71,4 +71,11 @@ public class GestionarEstudiantesMatriculadosGatewayImpAdapter
         PeriodoAcademicoEntity savedEntity = objPeriodoAcademico.save(periodoEntity);
         return objMapperPeriodoAcademico.mappearDeEntityAPeriodoAcademico(savedEntity);
     }
+
+    @Override
+    public List<PeriodoAcademico> obtenerPeriodosAcademicos() {
+        return objPeriodoAcademico.findAllByOrderByAñoDescPeriodoDesc().stream()
+                .map(objMapperPeriodoAcademico::mappearDeEntityAPeriodoAcademico)
+                .toList();
+    }
 }

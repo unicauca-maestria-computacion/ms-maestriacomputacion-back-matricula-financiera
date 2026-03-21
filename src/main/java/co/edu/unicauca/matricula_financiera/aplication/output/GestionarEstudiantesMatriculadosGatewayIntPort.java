@@ -12,5 +12,6 @@ public interface GestionarEstudiantesMatriculadosGatewayIntPort {
     Boolean existeEstudiante(String codigo);
     PeriodoAcademico obtenerPeriodoAcademicoActual();
     PeriodoAcademico agregarNuevoPeriodoAcademico(PeriodoAcademico periodo);
+    List<PeriodoAcademico> obtenerPeriodosAcademicos();
 }
 

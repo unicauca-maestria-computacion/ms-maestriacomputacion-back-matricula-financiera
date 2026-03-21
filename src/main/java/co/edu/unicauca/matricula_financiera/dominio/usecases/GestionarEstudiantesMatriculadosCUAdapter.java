@@ -48,6 +48,11 @@ public class GestionarEstudiantesMatriculadosCUAdapter implements GestionarEstud
     }
 
     @Override
+    public List<PeriodoAcademico> obtenerPeriodosAcademicos() {
+        return objGestionarEstudiantesMatriculados.obtenerPeriodosAcademicos();
+    }
+
+    @Override
     public Boolean iniciarNuevaMatriculaFinanciera() {
         // TODO: Implementar la lógica de negocio para iniciar una nueva matrícula
         // financiera
