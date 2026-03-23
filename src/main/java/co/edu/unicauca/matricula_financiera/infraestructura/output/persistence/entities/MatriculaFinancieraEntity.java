@@ -18,23 +18,22 @@ public class MatriculaFinancieraEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(name = "fecha_matricula")
     @Temporal(TemporalType.DATE)
     private Date fechaMatricula;
-    
+
     @Column(name = "valor_matricula")
     private Float valorMatricula;
-    
+
     @Column(name = "pagada")
     private Boolean pagada;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "periodo_academico_id")
     private PeriodoAcademicoEntity objPeriodoAcademico;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "estudiante_codigo", referencedColumnName = "codigo")
+    @JoinColumn(name = "id_estudiante", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private EstudianteEntity objEstudiante;
 }
-

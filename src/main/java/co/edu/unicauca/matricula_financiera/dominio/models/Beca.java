@@ -10,8 +10,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Beca {
-    private String resolucion;
+    private String dedicacion;
+    private String tipo;
+    private String entidadAsociada;
+    private String titulo;
     private Float porcentaje;
     private Estudiante estudiante;
 }
-

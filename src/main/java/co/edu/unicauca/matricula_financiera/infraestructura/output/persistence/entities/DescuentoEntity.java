@@ -18,33 +18,41 @@ public class DescuentoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Column(name = "fecha_inicio")
+
+    @Column(name = "fechainiciodes")
     @Temporal(TemporalType.DATE)
-    private Date fechaInicio;
-    
-    @Column(name = "fecha_fin")
+    private Date fechainiciodes;
+
+    @Column(name = "fechafindes")
     @Temporal(TemporalType.DATE)
-    private Date fechaFin;
-    
-    @Column(name = "tipo_descuento")
-    private String tipoDescuento;
-    
-    @Column(name = "num_acta_des")
-    private String numActaDes;
-    
-    @Column(name = "fecha_acta_des")
+    private Date fechafindes;
+
+    @Column(name = "tipodes")
+    private String tipodes;
+
+    @Column(name = "porcentajedes")
+    private Integer porcentajedes;
+
+    @Column(name = "numactades")
+    private String numactades;
+
+    @Column(name = "fechaactades")
     @Temporal(TemporalType.DATE)
-    private Date fechaActaDes;
-    
+    private Date fechaactades;
+
+    @Column(name = "numresoldes")
+    private String numresoldes;
+
+    @Column(name = "resoluciondes")
+    private String resoluciondes;
+
     @Column(name = "poliza")
     private String poliza;
-    
+
     @Column(name = "estado")
-    private String estado;
-    
+    private Boolean estado;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "estudiante_codigo", referencedColumnName = "codigo")
+    @JoinColumn(name = "id_estudiante", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private EstudianteEntity objEstudiante;
 }
-

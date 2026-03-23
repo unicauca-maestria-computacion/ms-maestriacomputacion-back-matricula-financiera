@@ -10,11 +10,15 @@ import co.edu.unicauca.matricula_financiera.infraestructura.output.persistence.m
 import co.edu.unicauca.matricula_financiera.infraestructura.output.persistence.repositories.EstudianteReporsitoryInt;
 import co.edu.unicauca.matricula_financiera.infraestructura.output.persistence.repositories.PeriodoAcademicoReporsitoryInt;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
+@Transactional(readOnly = true)
 public class GestionarEstudiantesMatriculadosGatewayImpAdapter
         implements GestionarEstudiantesMatriculadosGatewayIntPort {
 
@@ -51,7 +55,7 @@ public class GestionarEstudiantesMatriculadosGatewayImpAdapter
 
     @Override
     public Boolean existePeriodo(PeriodoAcademico periodo) {
-        return objPeriodoAcademico.findByPeriodoAndAño(periodo.getPeriodo(), periodo.getAño()).isPresent();
+        return !objPeriodoAcademico.findByPeriodoAndAño(periodo.getPeriodo(), periodo.getAño()).isEmpty();
     }
 
     @Override
@@ -74,8 +78,10 @@ public class GestionarEstudiantesMatriculadosGatewayImpAdapter
 
     @Override
     public List<PeriodoAcademico> obtenerPeriodosAcademicos() {
+        Set<String> seen = new HashSet<>();
         return objPeriodoAcademico.findAllByOrderByAñoDescPeriodoDesc().stream()
                 .map(objMapperPeriodoAcademico::mappearDeEntityAPeriodoAcademico)
+                .filter(p -> seen.add(p.getAño() + "-" + p.getPeriodo()))
                 .toList();
     }
 }

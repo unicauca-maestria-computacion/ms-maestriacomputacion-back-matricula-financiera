@@ -79,28 +79,16 @@ public class EstudianteMapperPersistenciaImpl implements EstudianteMapperPersist
 
     private Descuento mappearDescuento(DescuentoEntity entity) {
         Descuento d = new Descuento();
-        d.setTipoDescuento(entity.getTipoDescuento());
-        d.setPorcentaje(derivarPorcentajeDescuento(entity.getTipoDescuento()));
+        d.setTipoDescuento(entity.getTipodes());
+        d.setPorcentaje(entity.getPorcentajedes() != null ? entity.getPorcentajedes().floatValue() : 0f);
         return d;
     }
 
     private Beca mappearBeca(BecaEntity entity) {
         Beca b = new Beca();
-        b.setResolucion(entity.getTitulo());
+        b.setDedicacion(entity.getDedicacion());
         b.setPorcentaje(0f);
         return b;
-    }
-
-    /**
-     * Deriva el porcentaje de descuento según el tipo.
-     * Votación: 10%, Egresado: 5%.
-     */
-    private Float derivarPorcentajeDescuento(String tipoDescuento) {
-        if (tipoDescuento == null) return 0f;
-        String tipo = tipoDescuento.toLowerCase();
-        if (tipo.contains("votac")) return 0.10f;
-        if (tipo.contains("egresad")) return 0.05f;
-        return 0f;
     }
 
     @Override

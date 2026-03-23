@@ -16,21 +16,23 @@ public class BecaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Column(name = "dedicador")
-    private String dedicador;
-    
+
+    @Column(name = "dedicacion")
+    private String dedicacion;
+
     @Column(name = "entidad_asociada")
     private String entidadAsociada;
-    
+
+    @Column(name = "es_ofrecida_por_unicauca")
+    private String esOfrecidaPorUnicauca;
+
     @Column(name = "tipo")
     private String tipo;
-    
+
     @Column(name = "titulo")
     private String titulo;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "estudiante_codigo", referencedColumnName = "codigo")
+    @JoinColumn(name = "id_estudiante", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private EstudianteEntity objEstudiante;
 }
-

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "estudiante")
-@PrimaryKeyJoinColumn(name = "persona_id", referencedColumnName = "id")
+@PrimaryKeyJoinColumn(name = "persona_id", referencedColumnName = "id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class EstudianteEntity extends PersonaEntity {

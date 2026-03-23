@@ -40,8 +40,7 @@ public class EstudianteMapperInfraestructuraImpl implements EstudianteMapperInfr
                 mappearMatriculasFinancieras(estudiante.getMatriculasFinancieras()),
                 mappearDescuentos(estudiante.getDescuentos()),
                 mappearBecas(estudiante.getBecas()),
-                mappearMatriculasAcademicas(estudiante.getMatriculasAcademicas())
-        );
+                mappearMatriculasAcademicas(estudiante.getMatriculasAcademicas()));
     }
 
     @Override
@@ -55,56 +54,56 @@ public class EstudianteMapperInfraestructuraImpl implements EstudianteMapperInfr
     }
 
     private List<MatriculaFinancieraDTORespuesta> mappearMatriculasFinancieras(List<MatriculaFinanciera> matriculas) {
-        if (matriculas == null) return Collections.emptyList();
+        if (matriculas == null)
+            return Collections.emptyList();
         return matriculas.stream().map(m -> new MatriculaFinancieraDTORespuesta(
                 m.getFechaMatricula(),
                 m.getValorMatricula(),
                 m.getPagada(),
-                mappearPeriodo(m.getObjPeriodoAcademico())
-        )).collect(Collectors.toList());
+                mappearPeriodo(m.getObjPeriodoAcademico()))).collect(Collectors.toList());
     }
 
     private List<DescuentoDTORespuesta> mappearDescuentos(List<Descuento> descuentos) {
-        if (descuentos == null) return Collections.emptyList();
+        if (descuentos == null)
+            return Collections.emptyList();
         return descuentos.stream().map(d -> new DescuentoDTORespuesta(
                 d.getTipoDescuento(),
-                d.getPorcentaje()
-        )).collect(Collectors.toList());
+                d.getPorcentaje())).collect(Collectors.toList());
     }
 
     private List<BecaDTORespuesta> mappearBecas(List<Beca> becas) {
-        if (becas == null) return Collections.emptyList();
+        if (becas == null)
+            return Collections.emptyList();
         return becas.stream().map(b -> new BecaDTORespuesta(
-                b.getResolucion(),
-                b.getPorcentaje()
-        )).collect(Collectors.toList());
+                b.getDedicacion(),
+                b.getPorcentaje())).collect(Collectors.toList());
     }
 
     private List<MatriculaAcademicaDTORespuesta> mappearMatriculasAcademicas(List<MatriculaAcademica> matriculas) {
-        if (matriculas == null) return Collections.emptyList();
+        if (matriculas == null)
+            return Collections.emptyList();
         return matriculas.stream().map(m -> new MatriculaAcademicaDTORespuesta(
                 m.getSemestre(),
                 mappearMaterias(m.getMaterias()),
-                mappearPeriodo(m.getObjPeriodoAcademico())
-        )).collect(Collectors.toList());
+                mappearPeriodo(m.getObjPeriodoAcademico()))).collect(Collectors.toList());
     }
 
     private List<MateriaDTORespuesta> mappearMaterias(List<Materia> materias) {
-        if (materias == null) return Collections.emptyList();
+        if (materias == null)
+            return Collections.emptyList();
         return materias.stream().map(m -> new MateriaDTORespuesta(
                 m.getCodigo_oid(),
                 m.getSemestreAcademico(),
                 m.getMateria(),
                 m.getObjDocente() != null ? new DocenteDTORespuesta(
                         m.getObjDocente().getNombre(),
-                        m.getObjDocente().getApellido()
-                ) : null,
-                m.getGrupoClase()
-        )).collect(Collectors.toList());
+                        m.getObjDocente().getApellido()) : null,
+                m.getGrupoClase())).collect(Collectors.toList());
     }
 
     private PeriodoAcademicoDTORespuesta mappearPeriodo(PeriodoAcademico periodo) {
-        if (periodo == null) return null;
+        if (periodo == null)
+            return null;
         return new PeriodoAcademicoDTORespuesta(periodo.getPeriodo(), periodo.getAño());
     }
 }
