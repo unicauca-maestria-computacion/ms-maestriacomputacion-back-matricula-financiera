@@ -5,7 +5,6 @@ import co.edu.unicauca.matricula_financiera.infraestructura.input.controllerEstu
 import co.edu.unicauca.matricula_financiera.infraestructura.input.controllerEstudiantesMatriculados.DTOPeticion.PeriodoAcademicoDTOPeticion;
 
 public interface PeriodoAcademicoMapperInfraestructura {
-    PeriodoAcademico mappearDePeticionAPeriodoAcademico(PeriodoAcademicoDTOPeticion periodo);
+    PeriodoAcademico mappearDePeticionAPeriodoAcademico(PeriodoAcademicoDTOPeticion peticion);
     PeriodoAcademicoDTORespuesta mappearDePeriodoAcademicoARespuesta(PeriodoAcademico periodo);
 }
-

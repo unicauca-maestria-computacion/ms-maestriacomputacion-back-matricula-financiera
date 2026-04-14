@@ -11,10 +11,16 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Materia {
     private String codigo_oid;
-    private Integer semestreAcademico;
+    private Integer semestreFinanciero;
     private String materia;
     private Docente objDocente;
     private String grupoClase;
+    private Integer creditos;
+    private String tipo;
+    private String horario;
+    private String salon;
+    private String estadoMatricula;
+    private String observacion;
     private MatriculaAcademica objMatriculaAcademica;
 }
 

@@ -11,12 +11,21 @@ import java.util.Optional;
 
 @Repository
 public interface EstudianteReporsitoryInt extends JpaRepository<EstudianteEntity, Integer> {
+
     Optional<EstudianteEntity> findByCodigo(String codigo);
 
-    @Query("SELECT DISTINCT e FROM EstudianteEntity e " +
-           "JOIN e.matriculasFinancieras mf " +
-           "JOIN mf.objPeriodoAcademico p " +
-           "WHERE p.periodo = :periodo AND p.año = :año")
-    List<EstudianteEntity> findByPeriodoAcademico(@Param("periodo") Integer periodo, @Param("año") Integer año);
-}
+    List<EstudianteEntity> findByIdIn(List<Long> ids);
 
+    /**
+     * Estudiantes matriculados en un periodo académico específico.
+     * Accede directamente a las tablas matriculas y cursos de la BD compartida.
+     */
+    @Query(value = """
+            SELECT DISTINCT e.* FROM estudiantes e
+            JOIN matriculas m ON m.id_estudiante = e.id
+            JOIN cursos c     ON m.id_curso = c.id
+            WHERE c.periodo_id = :periodoId
+              AND m.estado = 1
+            """, nativeQuery = true)
+    List<EstudianteEntity> findByPeriodoId(@Param("periodoId") Long periodoId);
+}

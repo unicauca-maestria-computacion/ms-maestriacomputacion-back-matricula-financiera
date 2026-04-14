@@ -1,23 +1,34 @@
 package co.edu.unicauca.matricula_financiera.dominio.models;
 
-import lombok.AllArgsConstructor;
+import co.edu.unicauca.matricula_financiera.dominio.models.enums.PeriodoEstado;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class PeriodoAcademico {
-    private Integer periodo;
+    private Long id;
+    private Integer tagPeriodo;
     private Integer año;
+    private LocalDate fechaInicio;
+    private LocalDate fechaFin;
+    private LocalDate fechaFinMatricula;
+    private String descripcion;
+    private PeriodoEstado estado;
     private List<MatriculaFinanciera> matriculasFinancieras;
-    // Nota: Estas clases no están definidas en el diagrama, se pueden agregar después si es necesario
-    // private ConfiguracionReportesFinanciero objConfiguracionReporteFinanciero;
-    // private ConfiguracionReportesGrupos objConfiguracionReporteGrupo;
-    // private ProyeccionEstudiante objProyeccionEstudiante;
-}
 
+    // getPeriodo() y getAño() como alias para compatibilidad
+    public Integer getPeriodo() {
+        return tagPeriodo;
+    }
+
+    public Integer getAño() {
+        if (año != null) return año;
+        return fechaInicio != null ? fechaInicio.getYear() : null;
+    }
+}

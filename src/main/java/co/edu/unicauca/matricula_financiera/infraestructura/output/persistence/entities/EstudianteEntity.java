@@ -1,22 +1,26 @@
 package co.edu.unicauca.matricula_financiera.infraestructura.output.persistence.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "estudiante")
-@PrimaryKeyJoinColumn(name = "persona_id", referencedColumnName = "id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class EstudianteEntity extends PersonaEntity {
+@Table(name = "estudiantes")
+@Getter
+@Setter
+@NoArgsConstructor
+public class EstudianteEntity {
 
-    @Column(name = "codigo", unique = true, nullable = false, length = 20)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "codigo", unique = true, length = 255)
     private String codigo;
 
-    private String cohorte;
+    @Column(name = "cohorte")
+    private Integer cohorte;
 
     @Column(name = "periodo_ingreso")
     private String periodoIngreso;
@@ -24,12 +28,6 @@ public class EstudianteEntity extends PersonaEntity {
     @Column(name = "semestre_financiero")
     private Integer semestreFinanciero;
 
-    @OneToMany(mappedBy = "objEstudiante", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<MatriculaFinancieraEntity> matriculasFinancieras;
-
-    @OneToMany(mappedBy = "objEstudiante", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<DescuentoEntity> descuentos;
-
-    @OneToMany(mappedBy = "objEstudiante", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<BecaEntity> becas;
+    @Column(name = "semestre_academico")
+    private Integer semestreAcademico;
 }

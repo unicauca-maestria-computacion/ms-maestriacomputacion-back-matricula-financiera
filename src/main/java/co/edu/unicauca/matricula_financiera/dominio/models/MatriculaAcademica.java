@@ -17,4 +17,3 @@ public class MatriculaAcademica {
     private List<Estudiante> estudiantes;
     private PeriodoAcademico objPeriodoAcademico;
 }
-

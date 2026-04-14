@@ -11,7 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MateriaDTORespuesta {
     private String codigo_oid;
-    private Integer semestreAcademico;
     private String materia;
     private DocenteDTORespuesta objDocente;
     private String grupoClase;

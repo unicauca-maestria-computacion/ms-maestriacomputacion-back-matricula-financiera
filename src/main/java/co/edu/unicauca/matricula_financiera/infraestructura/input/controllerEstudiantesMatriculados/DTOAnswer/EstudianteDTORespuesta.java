@@ -15,13 +15,13 @@ public class EstudianteDTORespuesta {
     private String codigo;
     private String nombre;
     private String apellido;
-    private Integer identificacion;
-    private String cohorte;
+    private Long identificacion;
+    private Integer cohorte;
     private String periodoIngreso;
     private Integer semestreFinanciero;
-    private List<MatriculaFinancieraDTORespuesta> matriculasFinancieras;
+    private Integer semestreAcademico;
+    private Integer valorEnSMLV;
     private List<DescuentoDTORespuesta> descuentos;
     private List<BecaDTORespuesta> becas;
-    private List<MatriculaAcademicaDTORespuesta> matriculasAcademicas;
+    private List<MateriaDTORespuesta> materias;
 }
-

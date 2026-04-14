@@ -39,27 +39,22 @@ public class ReporteEstudiantesRestController {
     }
 
     @GetMapping("/obtener-estudiante/{codigo}")
-    public ResponseEntity<EstudianteDTORespuesta> obtenerEstudiante(@PathVariable String codigo) {
-        var estudiante = objGestionarEstudiantesMatriculadosCUInt.obtenerEstudiante(codigo);
-        if (estudiante == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<EstudianteDTORespuesta> obtenerEstudiante(
+            @PathVariable("codigo") String codigo,
+            @RequestParam(required = false) Integer tagPeriodo,
+            @RequestParam(required = false) Integer anio) {
+        var estudiante = objGestionarEstudiantesMatriculadosCUInt.obtenerEstudiante(codigo, tagPeriodo, anio);
+        if (estudiante == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         var estudianteDTO = objMapperEstudiante.mappearDeEstudianteARespuesta(estudiante);
         return new ResponseEntity<>(estudianteDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/periodos-academicos")
+    @GetMapping({"/periodos-academicos", "/periodos-financieros"})
     public ResponseEntity<List<PeriodoAcademicoDTORespuesta>> obtenerPeriodosAcademicos() {
         var periodos = objGestionarEstudiantesMatriculadosCUInt.obtenerPeriodosAcademicos();
         var periodosDTO = periodos.stream()
                 .map(objMapperPeriodoAcademico::mappearDePeriodoAcademicoARespuesta)
                 .toList();
         return new ResponseEntity<>(periodosDTO, HttpStatus.OK);
-    }
-
-    @PostMapping("/iniciar")
-    public ResponseEntity<Boolean> iniciarNuevaMatriculaFinanciera() {
-        Boolean resultado = objGestionarEstudiantesMatriculadosCUInt.iniciarNuevaMatriculaFinanciera();
-        return new ResponseEntity<>(resultado, HttpStatus.OK);
     }
 }

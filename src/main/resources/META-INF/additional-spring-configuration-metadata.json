@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "matricula.academica.base-url",
+      "type": "java.lang.String",
+      "description": "Base URL del microservicio de matrícula académica."
+    }
+  ]
+}
