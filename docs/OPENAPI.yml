@@ -1,0 +1,349 @@
+openapi: 3.0.3
+info:
+  title: Matrícula Financiera API
+  description: |
+    Microservicio de gestión de matrícula financiera para la Maestría en Computación - Universidad del Cauca.
+    Expone endpoints para consultar estudiantes matriculados, su valor en SMLV y periodos académicos.
+  version: 1.0.0
+  contact:
+    name: Equipo Maestría Computación
+    email: maestria@unicauca.edu.co
+
+servers:
+  - url: http://localhost:8092
+    description: Servidor de desarrollo local
+
+tags:
+  - name: Estudiantes
+    description: Operaciones sobre estudiantes matriculados
+  - name: Periodos
+    description: Operaciones sobre periodos académicos
+
+paths:
+  /api/v1/gestion-matricula-financiera/estudiantes:
+    post:
+      tags: [Estudiantes]
+      summary: Obtener estudiantes matriculados por periodo
+      description: |
+        Retorna la lista completa de estudiantes matriculados en el periodo académico indicado.
+        Cada estudiante incluye datos personales, matrículas académicas y valor en SMLV calculado.
+      operationId: getStudentsByPeriod
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PeriodoAcademicoRequest'
+            example:
+              tagPeriodo: 1
+              anio: 2024
+      responses:
+        '200':
+          description: Lista de estudiantes matriculados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentResponse'
+        '400':
+          description: Datos de request inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+              example:
+                type: about:blank
+                title: Bad Request
+                status: 400
+                detail: "tagPeriodo: must not be null"
+                errorCode: MF-0006
+        '404':
+          description: Periodo académico no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: "El periodo académico 9-2099 no existe"
+                errorCode: MF-0003
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+  /api/v1/gestion-matricula-financiera/estudiantes/{codigo}:
+    get:
+      tags: [Estudiantes]
+      summary: Obtener estudiante por código
+      description: |
+        Retorna los datos financieros completos de un estudiante específico.
+        Si no se pasa periodo, usa el periodo académico activo.
+      operationId: getStudentByCode
+      parameters:
+        - name: codigo
+          in: path
+          required: true
+          description: Código único del estudiante
+          schema:
+            type: string
+            example: "EST001"
+        - name: tagPeriodo
+          in: query
+          required: false
+          description: Tag del periodo académico (1 o 2)
+          schema:
+            type: integer
+            example: 1
+        - name: anio
+          in: query
+          required: false
+          description: Año del periodo académico
+          schema:
+            type: integer
+            example: 2024
+      responses:
+        '200':
+          description: Datos del estudiante
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentResponse'
+        '404':
+          description: Estudiante no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+              example:
+                type: about:blank
+                title: Not Found
+                status: 404
+                detail: "El estudiante con código NOEXISTE no existe"
+                errorCode: MF-0003
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+  /api/v1/gestion-matricula-financiera/periodos:
+    get:
+      tags: [Periodos]
+      summary: Obtener todos los periodos académicos
+      description: Retorna la lista de periodos académicos ordenados por fecha de inicio descendente.
+      operationId: getAcademicPeriods
+      responses:
+        '200':
+          description: Lista de periodos académicos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PeriodoAcademicoResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+components:
+  schemas:
+    PeriodoAcademicoRequest:
+      type: object
+      required: [tagPeriodo, anio]
+      properties:
+        tagPeriodo:
+          type: integer
+          description: Identificador del semestre (1 o 2)
+          example: 1
+        anio:
+          type: integer
+          description: Año del periodo académico
+          example: 2024
+
+    StudentResponse:
+      type: object
+      properties:
+        codigo:
+          type: string
+          example: "EST001"
+        nombre:
+          type: string
+          example: "Juan"
+        apellido:
+          type: string
+          example: "Pérez"
+        identificacion:
+          type: integer
+          format: int64
+          example: 1234567890
+        cohorte:
+          type: integer
+          example: 2022
+        periodoIngreso:
+          type: string
+          example: "2022-1"
+        semestreFinanciero:
+          type: integer
+          example: 3
+        semestreAcademico:
+          type: integer
+          example: 3
+        valorEnSMLV:
+          type: integer
+          nullable: true
+          description: "Valor en SMLV: 6 (semestres 1-4 o con materias), 1 (solo TG2), null (sin materias en periodo)"
+          example: 6
+        descuentos:
+          type: array
+          items:
+            $ref: '#/components/schemas/DescuentoResponse'
+        becas:
+          type: array
+          items:
+            $ref: '#/components/schemas/BecaResponse'
+        materias:
+          type: array
+          items:
+            $ref: '#/components/schemas/MateriaResponse'
+
+    PeriodoAcademicoResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        tagPeriodo:
+          type: integer
+          example: 1
+        anio:
+          type: integer
+          example: 2024
+        fechaInicio:
+          type: string
+          format: date
+          example: "2024-01-15"
+        fechaFin:
+          type: string
+          format: date
+          example: "2024-06-30"
+        fechaFinMatricula:
+          type: string
+          format: date
+          example: "2024-02-15"
+        descripcion:
+          type: string
+          example: "Periodo 2024-1"
+        estado:
+          type: string
+          enum: [ACTIVO, INACTIVO, CERRADO]
+          example: "ACTIVO"
+
+    MateriaResponse:
+      type: object
+      properties:
+        codigoOid:
+          type: string
+          example: "12345"
+        materia:
+          type: string
+          example: "Algoritmos Avanzados"
+        creditos:
+          type: integer
+          example: 3
+        tipo:
+          type: string
+          example: "OBLIGATORIA"
+        grupoClase:
+          type: string
+          example: "A"
+        horario:
+          type: string
+          example: "Lunes 18:00-20:00"
+        salon:
+          type: string
+          example: "Sala 201"
+        estadoMatricula:
+          type: string
+          example: "ACTIVA"
+        observacion:
+          type: string
+          nullable: true
+        docente:
+          $ref: '#/components/schemas/DocenteResponse'
+
+    DocenteResponse:
+      type: object
+      properties:
+        nombre:
+          type: string
+          example: "Carlos"
+        apellido:
+          type: string
+          example: "García"
+
+    BecaResponse:
+      type: object
+      properties:
+        resolucion:
+          type: string
+          example: "RES-2024-001"
+        porcentaje:
+          type: number
+          format: float
+          example: 25.0
+
+    DescuentoResponse:
+      type: object
+      properties:
+        tipoDescuento:
+          type: string
+          example: "EGRESADO"
+        porcentaje:
+          type: number
+          format: float
+          example: 5.0
+
+    ProblemDetail:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "about:blank"
+        title:
+          type: string
+          example: "Not Found"
+        status:
+          type: integer
+          example: 404
+        detail:
+          type: string
+          example: "El estudiante con código EST001 no existe"
+        errorCode:
+          type: string
+          example: "MF-0003"
+        url:
+          type: string
+          example: "/api/v1/gestion-matricula-financiera/estudiantes/EST001"
+        method:
+          type: string
+          example: "GET"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []

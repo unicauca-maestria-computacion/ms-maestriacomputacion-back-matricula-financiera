@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: matricula-financiera
+  profiles:
+    active: dev
+  messages:
+    basename: ValidationMessages
+    encoding: UTF-8
+
+server:
+  port: 8092
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

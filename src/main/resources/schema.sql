@@ -1,15 +1,6 @@
 -- =============================================================
--- Script de creación de tablas - Base de datos compartida
--- Microservicios: Matrícula Financiera + Matrícula Académica
+-- Script de microservicios: Matrícula Financiera + Matrícula Académica
 -- =============================================================
-
-DROP DATABASE IF EXISTS `maestria-computacion`;
-
-CREATE DATABASE `maestria-computacion`
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
-
-USE `maestria-computacion`;
 
 -- -------------------------------------------------------------
 -- Tabla: personas (académico)

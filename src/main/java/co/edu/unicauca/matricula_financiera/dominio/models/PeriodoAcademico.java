@@ -1,6 +1,6 @@
 package co.edu.unicauca.matricula_financiera.dominio.models;
 
-import co.edu.unicauca.matricula_financiera.dominio.models.enums.PeriodoEstado;
+import co.edu.unicauca.matricula_financiera.domain.enums.PeriodoEstado;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
