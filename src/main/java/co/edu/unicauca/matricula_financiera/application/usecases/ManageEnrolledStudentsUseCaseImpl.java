@@ -1,12 +1,12 @@
 package co.edu.unicauca.matricula_financiera.application.usecases;
 
+import co.edu.unicauca.matricula_financiera.domain.models.Estudiante;
+import co.edu.unicauca.matricula_financiera.domain.models.Materia;
+import co.edu.unicauca.matricula_financiera.domain.models.MatriculaAcademica;
+import co.edu.unicauca.matricula_financiera.domain.models.PeriodoAcademico;
 import co.edu.unicauca.matricula_financiera.domain.ports.in.ManageEnrolledStudentsUseCase;
 import co.edu.unicauca.matricula_financiera.domain.ports.out.ResultFormatterPort;
 import co.edu.unicauca.matricula_financiera.domain.ports.out.StudentGatewayPort;
-import co.edu.unicauca.matricula_financiera.dominio.models.Estudiante;
-import co.edu.unicauca.matricula_financiera.dominio.models.Materia;
-import co.edu.unicauca.matricula_financiera.dominio.models.MatriculaAcademica;
-import co.edu.unicauca.matricula_financiera.dominio.models.PeriodoAcademico;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;

@@ -1,12 +1,12 @@
 package co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.mapper;
 
-import co.edu.unicauca.matricula_financiera.dominio.models.Beca;
-import co.edu.unicauca.matricula_financiera.dominio.models.Descuento;
-import co.edu.unicauca.matricula_financiera.dominio.models.Docente;
-import co.edu.unicauca.matricula_financiera.dominio.models.Estudiante;
-import co.edu.unicauca.matricula_financiera.dominio.models.Materia;
-import co.edu.unicauca.matricula_financiera.dominio.models.MatriculaAcademica;
-import co.edu.unicauca.matricula_financiera.dominio.models.PeriodoAcademico;
+import co.edu.unicauca.matricula_financiera.domain.models.Beca;
+import co.edu.unicauca.matricula_financiera.domain.models.Descuento;
+import co.edu.unicauca.matricula_financiera.domain.models.Docente;
+import co.edu.unicauca.matricula_financiera.domain.models.Estudiante;
+import co.edu.unicauca.matricula_financiera.domain.models.Materia;
+import co.edu.unicauca.matricula_financiera.domain.models.MatriculaAcademica;
+import co.edu.unicauca.matricula_financiera.domain.models.PeriodoAcademico;
 import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoRequest.PeriodoAcademicoRequest;
 import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoResponse.BecaResponse;
 import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoResponse.DescuentoResponse;

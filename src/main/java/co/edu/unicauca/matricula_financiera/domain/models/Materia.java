@@ -1,4 +1,4 @@
-package co.edu.unicauca.matricula_financiera.dominio.models;
+package co.edu.unicauca.matricula_financiera.domain.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

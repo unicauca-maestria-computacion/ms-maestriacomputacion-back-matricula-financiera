@@ -1,8 +1,8 @@
 package co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.controller;
 
+import co.edu.unicauca.matricula_financiera.domain.models.Estudiante;
+import co.edu.unicauca.matricula_financiera.domain.models.PeriodoAcademico;
 import co.edu.unicauca.matricula_financiera.domain.ports.in.ManageEnrolledStudentsUseCase;
-import co.edu.unicauca.matricula_financiera.dominio.models.Estudiante;
-import co.edu.unicauca.matricula_financiera.dominio.models.PeriodoAcademico;
 import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoRequest.PeriodoAcademicoRequest;
 import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoResponse.PeriodoAcademicoResponse;
 import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoResponse.StudentResponse;

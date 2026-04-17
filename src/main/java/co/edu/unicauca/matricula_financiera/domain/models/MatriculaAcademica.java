@@ -1,4 +1,4 @@
-package co.edu.unicauca.matricula_financiera.dominio.models;
+package co.edu.unicauca.matricula_financiera.domain.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +11,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Docente {
-    private String nombre;
-    private String apellido;
+public class MatriculaAcademica {
+    private Integer semestre;
     private List<Materia> materias;
+    private List<Estudiante> estudiantes;
+    private PeriodoAcademico objPeriodoAcademico;
 }
-

@@ -1,43 +1,26 @@
-# Compiled class files
-*.class
+HELP.md
 
-# Log files
-*.log
-
-# Package files
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# Maven
+# Maven build output
 target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Maven wrapper jar (se descarga automáticamente)
 .mvn/wrapper/maven-wrapper.jar
 
-# Gradle
-.gradle/
-build/
-!gradle/wrapper/gradle-wrapper.jar
+# ArchUnit frozen violations store (runtime-generated, no es código fuente)
+.archunit_store/
 
-# IDE - IntelliJ IDEA
+# jqwik property test database (runtime-generated)
+.jqwik-database
+
+# IntelliJ IDEA
 .idea/
 *.iws
 *.iml
 *.ipr
-out/
 
-# IDE - Eclipse
+# Eclipse / STS
 .apt_generated
 .classpath
 .factorypath
@@ -45,41 +28,23 @@ out/
 .settings/
 .springBeans
 .sts4-cache
-bin/
 
-# IDE - NetBeans
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-# IDE - VS Code
+# VS Code
 .vscode/
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
 
-# Spring Boot
-*.pid
+# Archivos temporales
+*.tmp
+*.bak
+*~
 
-# Application properties with sensitive data
+# Logs
+*.log
+logs/
+
+# Credenciales locales hardcodeadas (usar variables de entorno en su lugar)
 application-local.properties
 application-local.yml
-application-dev.properties
-application-dev.yml
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# Temporary files
-*.tmp
-*.tmp.*
-*.bak
-*.swp
-*~
-src/main/java/**/*20060.*
-src/main/java/**/matricula_f
