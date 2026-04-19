@@ -16,4 +16,5 @@ public interface StudentGatewayPort {
     List<PeriodoAcademico> findAllPeriods();
     PeriodoAcademico findActivePeriod();
     List<MatriculaAcademica> findAcademicEnrollments(Long studentId, Integer tag, Integer year);
+    boolean tieneSolicitudCerVotoAprobada(String codigoEstudiante);
 }

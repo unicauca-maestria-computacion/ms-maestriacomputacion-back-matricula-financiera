@@ -9,4 +9,5 @@ public interface ManageEnrolledStudentsUseCase {
     List<Estudiante> getStudentsByPeriod(PeriodoAcademico period);
     Estudiante getStudentByCode(String code, Integer tagPeriodo, Integer year);
     List<PeriodoAcademico> getAcademicPeriods();
+    boolean tieneDescuentoVoto(String codigoEstudiante);
 }

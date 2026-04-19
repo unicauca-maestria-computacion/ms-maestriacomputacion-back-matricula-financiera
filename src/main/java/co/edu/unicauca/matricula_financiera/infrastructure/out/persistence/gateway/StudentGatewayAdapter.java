@@ -87,4 +87,9 @@ public class StudentGatewayAdapter implements StudentGatewayPort {
         if (studentId == null || tag == null || year == null) return new ArrayList<>();
         return bdCompartida.findMatriculasPorEstudianteYPeriodo(studentId, tag, year);
     }
+
+    @Override
+    public boolean tieneSolicitudCerVotoAprobada(String codigoEstudiante) {
+        return bdCompartida.tieneSolicitudCerVotoAprobada(codigoEstudiante);
+    }
 }

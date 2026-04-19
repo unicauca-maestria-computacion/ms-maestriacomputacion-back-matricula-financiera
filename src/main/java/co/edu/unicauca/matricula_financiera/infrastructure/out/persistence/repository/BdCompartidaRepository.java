@@ -118,6 +118,19 @@ public class BdCompartidaRepository {
         return result.isEmpty() ? null : result.get(0);
     }
 
+    public boolean tieneSolicitudCerVotoAprobada(String codigoEstudiante) {
+        String sql = """
+                SELECT COUNT(*) FROM solicitudes s
+                INNER JOIN tipos_solicitudes ts ON ts.id = s.id_tipo_solicitud
+                INNER JOIN estudiantes e ON e.id = s.id_estudiante
+                WHERE e.codigo = ?
+                  AND ts.codigo = 'CER_VOTO'
+                  AND UPPER(s.estado) = 'APROBADA'
+                """;
+        Integer count = jdbc.queryForObject(sql, Integer.class, codigoEstudiante);
+        return count != null && count > 0;
+    }
+
     private PeriodoAcademico mapPeriodo(java.sql.ResultSet rs) throws java.sql.SQLException {
         PeriodoAcademico p = new PeriodoAcademico();
         p.setId(rs.getLong("id"));

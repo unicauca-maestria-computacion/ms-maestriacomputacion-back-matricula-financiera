@@ -85,6 +85,11 @@ public class ManageEnrolledStudentsUseCaseImpl implements ManageEnrolledStudents
         return gateway.findAllPeriods();
     }
 
+    @Override
+    public boolean tieneDescuentoVoto(String codigoEstudiante) {
+        return gateway.tieneSolicitudCerVotoAprobada(codigoEstudiante);
+    }
+
     private void enrich(Estudiante student, Integer tag, Integer year) {
         if (student.getId() == null) return;
         gateway.enrichPersonalData(student);

@@ -47,6 +47,12 @@ public class StudentController {
         return ResponseEntity.ok(mapper.fromEstudianteToResponse(student));
     }
 
+    @GetMapping("/estudiantes/{codigo}/descuento-voto")
+    public ResponseEntity<Boolean> tieneDescuentoVoto(@PathVariable String codigo) {
+        boolean tiene = useCase.tieneDescuentoVoto(codigo);
+        return ResponseEntity.ok(tiene);
+    }
+
     @GetMapping("/periodos")
     public ResponseEntity<List<PeriodoAcademicoResponse>> getAcademicPeriods() {
         List<PeriodoAcademico> periods = useCase.getAcademicPeriods();
