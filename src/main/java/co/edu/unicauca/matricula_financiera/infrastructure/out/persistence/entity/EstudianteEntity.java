@@ -37,4 +37,7 @@ public class EstudianteEntity {
 
     @Column(name = "semestre_academico")
     private Integer semestreAcademico;
+
+    @Column(name = "es_egresado_unicauca", nullable = false)
+    private Boolean esEgresadoUnicauca = false;
 }

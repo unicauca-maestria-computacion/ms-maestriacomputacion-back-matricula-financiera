@@ -21,6 +21,7 @@ public class StudentResponse {
     private Integer semestreFinanciero;
     private Integer semestreAcademico;
     private Integer valorEnSMLV;
+    private Boolean esEgresadoUnicauca;
     private List<DescuentoResponse> descuentos;
     private List<BecaResponse> becas;
     private List<MateriaResponse> materias;

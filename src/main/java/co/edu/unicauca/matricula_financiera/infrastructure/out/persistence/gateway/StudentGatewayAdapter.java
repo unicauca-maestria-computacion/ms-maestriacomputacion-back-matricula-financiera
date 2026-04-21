@@ -56,6 +56,7 @@ public class StudentGatewayAdapter implements StudentGatewayPort {
         if (idNum != null) student.setIdentificacion(((Number) idNum).longValue());
         Object semAcad = datos[3];
         if (semAcad != null) student.setSemestreAcademico(((Number) semAcad).intValue());
+        student.setEsEgresadoUnicauca((Boolean) datos[4]);
     }
 
     @Override

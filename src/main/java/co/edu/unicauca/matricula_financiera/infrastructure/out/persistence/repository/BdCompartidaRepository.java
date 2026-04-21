@@ -103,7 +103,7 @@ public class BdCompartidaRepository {
     public Object[] findDatosPersonalesEstudiante(Long estudianteId) {
         String sql = """
                 SELECT p.nombre, p.apellido, p.identificacion,
-                       e.semestre_academico
+                       e.semestre_academico, e.es_egresado_unicauca
                 FROM estudiantes e
                 LEFT JOIN personas p ON p.id = e.id_persona
                 WHERE e.id = ?
@@ -113,7 +113,8 @@ public class BdCompartidaRepository {
                         rs.getString("nombre"),
                         rs.getString("apellido"),
                         rs.getLong("identificacion"),
-                        rs.getObject("semestre_academico")
+                        rs.getObject("semestre_academico"),
+                        rs.getBoolean("es_egresado_unicauca")
                 }, estudianteId);
         return result.isEmpty() ? null : result.get(0);
     }
