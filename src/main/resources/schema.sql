@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS docentes (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS cursos (
-    id               BIGINT        NOT NULL AUTO_INCREMENT,
+    id               INT           NOT NULL AUTO_INCREMENT,
     grupocurso       VARCHAR(20)   NOT NULL,
     periodo_id       BIGINT        NOT NULL,
     id_asignatura    BIGINT        NOT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS cursos (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS curso_docente (
-    id_curso    BIGINT NOT NULL,
+    id_curso    INT    NOT NULL,
     id_docente  BIGINT NOT NULL,
     CONSTRAINT pk_curso_docente PRIMARY KEY (id_curso, id_docente),
     CONSTRAINT fk_cd_curso   FOREIGN KEY (id_curso)   REFERENCES cursos (id),
@@ -92,9 +92,9 @@ CREATE TABLE IF NOT EXISTS curso_docente (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS matriculas (
-    id               BIGINT      NOT NULL AUTO_INCREMENT,
+    id               INT         NOT NULL AUTO_INCREMENT,
     id_estudiante    BIGINT,
-    id_curso         BIGINT,
+    id_curso         INT,
     id_periodo       BIGINT,
     estado           INT,
     estado_matricula VARCHAR(50),
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS docentes_asignatura (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS materiales_apoyo (
-    id                  BIGINT       NOT NULL AUTO_INCREMENT,
+    id                  INT          NOT NULL AUTO_INCREMENT,
     nombrematerial      VARCHAR(150) NOT NULL UNIQUE,
     descripcionmaterial VARCHAR(500),
     enlacesmaterial     VARCHAR(500) NOT NULL,
@@ -131,8 +131,8 @@ CREATE TABLE IF NOT EXISTS materiales_apoyo (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS curso_material (
-    id_curso    BIGINT NOT NULL,
-    id_material BIGINT NOT NULL,
+    id_curso    INT    NOT NULL,
+    id_material INT    NOT NULL,
     CONSTRAINT pk_curso_material PRIMARY KEY (id_curso, id_material),
     CONSTRAINT fk_cm_curso    FOREIGN KEY (id_curso)    REFERENCES cursos (id),
     CONSTRAINT fk_cm_material FOREIGN KEY (id_material) REFERENCES materiales_apoyo (id)
@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS curso_material (
 
 CREATE TABLE IF NOT EXISTS matricula_calificaciones (
     id            BIGINT      NOT NULL AUTO_INCREMENT,
-    id_matricula  BIGINT      NOT NULL,
+    id_matricula  INT         NOT NULL,
     id_asignatura BIGINT      NOT NULL,
     nota          DECIMAL(5,2),
     es_definitiva TINYINT,
