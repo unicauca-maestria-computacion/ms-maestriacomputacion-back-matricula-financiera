@@ -23,9 +23,10 @@ public class Estudiante {
     private Integer semestreAcademico;
     private Integer valorEnSMLV;
     private Boolean esEgresadoUnicauca;
-    private List<MatriculaFinanciera> matriculasFinancieras;
-    private List<Descuento> descuentos;
-    private List<Beca> becas;
+    private Boolean aplicaVotacion;
     private List<MatriculaAcademica> matriculasAcademicas;
+    private List<BecaDescuentoInfo> becasDescuentos;
+    private Boolean estaPago;
+    private String grupoNombre;
 }
 

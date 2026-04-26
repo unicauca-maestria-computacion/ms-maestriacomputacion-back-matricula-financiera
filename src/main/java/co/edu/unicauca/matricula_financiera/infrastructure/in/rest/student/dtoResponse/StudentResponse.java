@@ -22,7 +22,9 @@ public class StudentResponse {
     private Integer semestreAcademico;
     private Integer valorEnSMLV;
     private Boolean esEgresadoUnicauca;
-    private List<DescuentoResponse> descuentos;
-    private List<BecaResponse> becas;
+    private Boolean aplicaVotacion;
     private List<MateriaResponse> materias;
+    private List<BecaDescuentoInfoResponse> becasDescuentos;
+    private Boolean estaPago;
+    private String grupoNombre;
 }

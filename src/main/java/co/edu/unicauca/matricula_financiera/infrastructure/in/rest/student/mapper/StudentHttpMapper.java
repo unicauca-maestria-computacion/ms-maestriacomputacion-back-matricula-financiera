@@ -1,15 +1,13 @@
 package co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.mapper;
 
-import co.edu.unicauca.matricula_financiera.domain.models.Beca;
-import co.edu.unicauca.matricula_financiera.domain.models.Descuento;
+import co.edu.unicauca.matricula_financiera.domain.models.BecaDescuentoInfo;
 import co.edu.unicauca.matricula_financiera.domain.models.Docente;
 import co.edu.unicauca.matricula_financiera.domain.models.Estudiante;
 import co.edu.unicauca.matricula_financiera.domain.models.Materia;
 import co.edu.unicauca.matricula_financiera.domain.models.MatriculaAcademica;
 import co.edu.unicauca.matricula_financiera.domain.models.PeriodoAcademico;
 import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoRequest.PeriodoAcademicoRequest;
-import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoResponse.BecaResponse;
-import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoResponse.DescuentoResponse;
+import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoResponse.BecaDescuentoInfoResponse;
 import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoResponse.DocenteResponse;
 import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoResponse.MateriaResponse;
 import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoResponse.PeriodoAcademicoResponse;
@@ -34,13 +32,12 @@ public interface StudentHttpMapper {
     List<PeriodoAcademicoResponse> fromListPeriodosToResponse(List<PeriodoAcademico> periodos);
 
     @Mapping(target = "materias", expression = "java(flatMaterias(estudiante))")
+    @Mapping(target = "becasDescuentos", expression = "java(mapBecasDescuentos(estudiante))")
     StudentResponse fromEstudianteToResponse(Estudiante estudiante);
 
     List<StudentResponse> fromListToResponse(List<Estudiante> estudiantes);
 
-    BecaResponse fromBecaToResponse(Beca beca);
-
-    DescuentoResponse fromDescuentoToResponse(Descuento descuento);
+    BecaDescuentoInfoResponse fromBecaDescuentoInfoToResponse(BecaDescuentoInfo info);
 
     @Mapping(target = "codigoOid", source = "codigo_oid")
     @Mapping(target = "docente", source = "objDocente")
@@ -59,5 +56,12 @@ public interface StudentHttpMapper {
             }
         }
         return result;
+    }
+
+    default List<BecaDescuentoInfoResponse> mapBecasDescuentos(Estudiante estudiante) {
+        if (estudiante.getBecasDescuentos() == null) return new ArrayList<>();
+        return estudiante.getBecasDescuentos().stream()
+                .map(this::fromBecaDescuentoInfoToResponse)
+                .collect(java.util.stream.Collectors.toList());
     }
 }

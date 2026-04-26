@@ -1,6 +1,7 @@
 package co.edu.unicauca.matricula_financiera.infrastructure.out.persistence.gateway;
 
 import co.edu.unicauca.matricula_financiera.domain.enums.PeriodoEstado;
+import co.edu.unicauca.matricula_financiera.domain.models.BecaDescuentoInfo;
 import co.edu.unicauca.matricula_financiera.domain.models.Estudiante;
 import co.edu.unicauca.matricula_financiera.domain.models.MatriculaAcademica;
 import co.edu.unicauca.matricula_financiera.domain.models.PeriodoAcademico;
@@ -13,13 +14,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class StudentGatewayAdapter implements StudentGatewayPort {
 
     private final EstudianteJpaRepository repository;
@@ -92,5 +94,32 @@ public class StudentGatewayAdapter implements StudentGatewayPort {
     @Override
     public boolean tieneSolicitudCerVotoAprobada(String codigoEstudiante) {
         return bdCompartida.tieneSolicitudCerVotoAprobada(codigoEstudiante);
+    }
+
+    @Override
+    public List<BecaDescuentoInfo> findBecasDescuentosByEstudianteAndPeriodo(
+            Long estudianteId, LocalDate periodoFechaInicio, LocalDate periodoFechaFin) {
+        return bdCompartida.findBecasDescuentosByEstudianteAndPeriodo(
+                estudianteId, periodoFechaInicio, periodoFechaFin);
+    }
+
+    @Override
+    public boolean findEstadoPago(Long studentId, Integer tagPeriodo, Integer anio) {
+        return bdCompartida.findEstadoPagoPorEstudianteYPeriodo(studentId, tagPeriodo, anio);
+    }
+
+    @Override
+    public void registrarMatriculaFinanciera(Long estudianteId, Long periodoId, Long grupoId, boolean estaPago) {
+        bdCompartida.registrarMatriculaFinanciera(estudianteId, periodoId, grupoId, estaPago);
+    }
+
+    @Override
+    public Long findUltimoGrupoId(Long estudianteId) {
+        return bdCompartida.findUltimoGrupoIdByEstudiante(estudianteId);
+    }
+
+    @Override
+    public String findGrupoNombre(Long estudianteId, Integer tag, Integer year) {
+        return bdCompartida.findGrupoNombrePorEstudianteYPeriodo(estudianteId, tag, year);
     }
 }

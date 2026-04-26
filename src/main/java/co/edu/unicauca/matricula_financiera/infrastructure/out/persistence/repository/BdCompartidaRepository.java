@@ -1,6 +1,7 @@
 package co.edu.unicauca.matricula_financiera.infrastructure.out.persistence.repository;
 
 import co.edu.unicauca.matricula_financiera.domain.enums.PeriodoEstado;
+import co.edu.unicauca.matricula_financiera.domain.models.BecaDescuentoInfo;
 import co.edu.unicauca.matricula_financiera.domain.models.Docente;
 import co.edu.unicauca.matricula_financiera.domain.models.Materia;
 import co.edu.unicauca.matricula_financiera.domain.models.MatriculaAcademica;
@@ -45,8 +46,8 @@ public class BdCompartidaRepository {
     }
 
     public List<MatriculaAcademica> findMatriculasPorEstudianteYPeriodo(Long estudianteId,
-                                                                         Integer tagPeriodo,
-                                                                         Integer anio) {
+            Integer tagPeriodo,
+            Integer anio) {
         String sql = """
                 SELECT m.id AS mat_id, m.estado_matricula, m.observacion,
                        c.grupocurso, c.horariocurso, c.saloncurso,
@@ -109,7 +110,7 @@ public class BdCompartidaRepository {
                 WHERE e.id = ?
                 """;
         List<Object[]> result = jdbc.query(sql,
-                (rs, i) -> new Object[]{
+                (rs, i) -> new Object[] {
                         rs.getString("nombre"),
                         rs.getString("apellido"),
                         rs.getLong("identificacion"),
@@ -132,6 +133,78 @@ public class BdCompartidaRepository {
         return count != null && count > 0;
     }
 
+    public List<BecaDescuentoInfo> findBecasDescuentosByEstudianteAndPeriodo(
+            Long estudianteId, LocalDate periodoFechaInicio, LocalDate periodoFechaFin) {
+        if (estudianteId == null || periodoFechaInicio == null) {
+            return java.util.Collections.emptyList();
+        }
+
+        String sql = "SELECT sbd.tipo, sec.porcentaje, sec.resolucion, s.estado, sec.avalado_concejo " +
+                "FROM solicitudes s " +
+                "JOIN solicitud_beca_descuento sbd ON sbd.id_solicitud = s.id " +
+                "JOIN solicitudes_en_concejo sec ON sec.id_solicitud = s.id " +
+                "WHERE s.id_estudiante = ? " +
+                "AND ? BETWEEN sec.fecha_inicio AND sec.fecha_fin";
+
+        return jdbc.query(sql, new org.springframework.jdbc.core.RowMapper<BecaDescuentoInfo>() {
+            @Override
+            public BecaDescuentoInfo mapRow(java.sql.ResultSet rs, int rowNum) throws java.sql.SQLException {
+                return new BecaDescuentoInfo(
+                        rs.getString("tipo"),
+                        rs.getFloat("porcentaje"),
+                        rs.getString("resolucion"),
+                        rs.getString("estado"),
+                        rs.getString("avalado_concejo"));
+            }
+        }, estudianteId, periodoFechaInicio);
+    }
+
+    public boolean findEstadoPagoPorEstudianteYPeriodo(Long estudianteId, Integer tagPeriodo, Integer anio) {
+        String sql = """
+                SELECT COUNT(*) FROM matricula_financiera mf
+                JOIN periodo_academico p ON mf.periodo_id = p.id
+                WHERE mf.estudiante_id = ? 
+                  AND p.tag_periodo = ? 
+                  AND YEAR(p.fecha_inicio) = ?
+                  AND mf.esta_pago = TRUE
+                """;
+        Integer count = jdbc.queryForObject(sql, Integer.class, estudianteId, tagPeriodo, anio);
+        return count != null && count > 0;
+    }
+
+    public String findGrupoNombrePorEstudianteYPeriodo(Long estudianteId, Integer tagPeriodo, Integer anio) {
+        String sql = """
+                SELECT g.nombre FROM matricula_financiera mf
+                JOIN periodo_academico p ON mf.periodo_id = p.id
+                JOIN grupo g ON g.id = mf.grupo_id
+                WHERE mf.estudiante_id = ? 
+                  AND p.tag_periodo = ? 
+                  AND YEAR(p.fecha_inicio) = ?
+                LIMIT 1
+                """;
+        List<String> result = jdbc.query(sql, (rs, i) -> rs.getString("nombre"), estudianteId, tagPeriodo, anio);
+        return result.isEmpty() ? null : result.get(0);
+    }
+
+    public void registrarMatriculaFinanciera(Long estudianteId, Long periodoId, Long grupoId, boolean estaPago) {
+        String sql = """
+                INSERT INTO matricula_financiera (estudiante_id, periodo_id, grupo_id, esta_pago)
+                VALUES (?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE grupo_id = VALUES(grupo_id), esta_pago = IF(esta_pago, TRUE, VALUES(esta_pago))
+                """;
+        jdbc.update(sql, estudianteId, periodoId, grupoId, estaPago);
+    }
+
+    public Long findUltimoGrupoIdByEstudiante(Long estudianteId) {
+        String sql = """
+                SELECT grupo_id FROM matricula_financiera
+                WHERE estudiante_id = ? AND grupo_id IS NOT NULL
+                ORDER BY id DESC LIMIT 1
+                """;
+        List<Long> ids = jdbc.query(sql, (rs, i) -> rs.getLong("grupo_id"), estudianteId);
+        return ids.isEmpty() ? null : ids.get(0);
+    }
+
     private PeriodoAcademico mapPeriodo(java.sql.ResultSet rs) throws java.sql.SQLException {
         PeriodoAcademico p = new PeriodoAcademico();
         p.setId(rs.getLong("id"));
@@ -142,8 +215,10 @@ public class BdCompartidaRepository {
         p.setDescripcion(rs.getString("descripcion"));
         String estado = rs.getString("estado");
         if (estado != null) {
-            try { p.setEstado(PeriodoEstado.valueOf(estado.toUpperCase())); }
-            catch (IllegalArgumentException ignored) {}
+            try {
+                p.setEstado(PeriodoEstado.valueOf(estado.toUpperCase()));
+            } catch (IllegalArgumentException ignored) {
+            }
         }
         return p;
     }

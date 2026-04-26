@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -172,5 +173,62 @@ class ManageEnrolledStudentsUseCaseImplTest {
 
         assertThat(result).hasSize(1);
         verify(gateway).findAllPeriods();
+    }
+
+    @Test
+    void enrich_shouldCallGatewayWithCorrectParamsAndAssignBecasDescuentos() {
+        // Arrange
+        PeriodoAcademico periodoConFechas = new PeriodoAcademico();
+        periodoConFechas.setId(1L);
+        periodoConFechas.setTagPeriodo(1);
+        periodoConFechas.setAño(2024);
+        periodoConFechas.setFechaInicio(LocalDate.of(2024, 1, 15));
+        periodoConFechas.setFechaFin(LocalDate.of(2024, 6, 30));
+
+        co.edu.unicauca.matricula_financiera.domain.models.BecaDescuentoInfo beca =
+                new co.edu.unicauca.matricula_financiera.domain.models.BecaDescuentoInfo(
+                        "BECA", 50.0f, "RES-001", "avalada", "SI");
+
+        when(gateway.existsAcademicPeriod(any())).thenReturn(true);
+        when(gateway.findPeriodByTagAndYear(anyInt(), anyInt())).thenReturn(periodoConFechas);
+        when(gateway.findStudentsByPeriodId(anyLong())).thenReturn(List.of(studentSemester3));
+        when(gateway.findAcademicEnrollments(anyLong(), anyInt(), anyInt())).thenReturn(List.of());
+        when(gateway.findBecasDescuentosByEstudianteAndPeriodo(
+                anyLong(), any(LocalDate.class), any(LocalDate.class)))
+                .thenReturn(List.of(beca));
+
+        // Act
+        List<Estudiante> result = useCase.getStudentsByPeriod(validPeriod);
+
+        // Assert
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getBecasDescuentos()).hasSize(1);
+        assertThat(result.get(0).getBecasDescuentos().get(0).getTipo()).isEqualTo("BECA");
+        verify(gateway).findBecasDescuentosByEstudianteAndPeriodo(
+                anyLong(),
+                org.mockito.ArgumentMatchers.eq(LocalDate.of(2024, 1, 15)),
+                org.mockito.ArgumentMatchers.eq(LocalDate.of(2024, 6, 30)));
+    }
+
+    @Test
+    void enrich_whenPeriodHasNoFechas_shouldAssignEmptyBecasDescuentos() {
+        // Arrange - período sin fechas
+        PeriodoAcademico periodoSinFechas = new PeriodoAcademico();
+        periodoSinFechas.setId(1L);
+        periodoSinFechas.setTagPeriodo(1);
+        periodoSinFechas.setAño(2024);
+        // sin setFechaInicio ni setFechaFin
+
+        when(gateway.existsAcademicPeriod(any())).thenReturn(true);
+        when(gateway.findPeriodByTagAndYear(anyInt(), anyInt())).thenReturn(periodoSinFechas);
+        when(gateway.findStudentsByPeriodId(anyLong())).thenReturn(List.of(studentSemester3));
+        when(gateway.findAcademicEnrollments(anyLong(), anyInt(), anyInt())).thenReturn(List.of());
+
+        // Act
+        List<Estudiante> result = useCase.getStudentsByPeriod(validPeriod);
+
+        // Assert
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getBecasDescuentos()).isEmpty();
     }
 }

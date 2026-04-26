@@ -1,5 +1,6 @@
 package co.edu.unicauca.matricula_financiera.application.usecases;
 
+import co.edu.unicauca.matricula_financiera.domain.models.BecaDescuentoInfo;
 import co.edu.unicauca.matricula_financiera.domain.models.Estudiante;
 import co.edu.unicauca.matricula_financiera.domain.models.Materia;
 import co.edu.unicauca.matricula_financiera.domain.models.MatriculaAcademica;
@@ -32,18 +33,20 @@ public class ManageEnrolledStudentsUseCaseImpl implements ManageEnrolledStudents
         PeriodoAcademico resolved = gateway.findPeriodByTagAndYear(
                 period.getTagPeriodo(), period.getAño());
         List<Estudiante> students = gateway.findStudentsByPeriodId(resolved.getId());
-        students.forEach(s -> {
-            enrich(s, period.getTagPeriodo(), period.getAño());
-            // Calcular semestres DESPUÉS de enrich para no ser pisados por enrichPersonalData
-            int semestre = calculateSemester(s.getPeriodoIngreso(), period.getTagPeriodo(), period.getAño());
-            if (semestre > 0) {
-                s.setSemestreFinanciero(semestre);
-                s.setSemestreAcademico(semestre);
-            }
-            // Recalcular SMLV con el semestre financiero correcto
-            s.setValorEnSMLV(calculateSmlv(s));
-        });
-        return students;
+        return students.stream()
+                .peek(s -> {
+                    enrich(s, period.getTagPeriodo(), period.getAño());
+                    // Calcular semestres DESPUÉS de enrich para no ser pisados por enrichPersonalData
+                    int semReal = calculateSemester(s.getPeriodoIngreso(), period.getTagPeriodo(), period.getAño());
+                    if (semReal > 0) {
+                        s.setSemestreFinanciero(semReal);
+                        s.setSemestreAcademico(Math.min(semReal, 4));
+                    }
+                    // Recalcular SMLV con el semestre financiero correcto
+                    s.setValorEnSMLV(calculateSmlv(s));
+                })
+                .filter(s -> s.getValorEnSMLV() != null)
+                .toList();
     }
 
     @Override
@@ -69,10 +72,10 @@ public class ManageEnrolledStudentsUseCaseImpl implements ManageEnrolledStudents
         if (resolvedTag != null && resolvedYear != null) {
             enrich(student, resolvedTag, resolvedYear);
             // Calcular semestres dinámicamente DESPUÉS de enrich para no ser pisados
-            int semestre = calculateSemester(student.getPeriodoIngreso(), resolvedTag, resolvedYear);
-            if (semestre > 0) {
-                student.setSemestreFinanciero(semestre);
-                student.setSemestreAcademico(semestre);
+            int semReal = calculateSemester(student.getPeriodoIngreso(), resolvedTag, resolvedYear);
+            if (semReal > 0) {
+                student.setSemestreFinanciero(semReal);
+                student.setSemestreAcademico(Math.min(semReal, 4));
             }
             // Recalcular SMLV con el semestre financiero correcto
             student.setValorEnSMLV(calculateSmlv(student));
@@ -96,15 +99,42 @@ public class ManageEnrolledStudentsUseCaseImpl implements ManageEnrolledStudents
         List<MatriculaAcademica> enrollments =
                 gateway.findAcademicEnrollments(student.getId(), tag, year);
         student.setMatriculasAcademicas(new ArrayList<>(enrollments));
+        // Obtener período completo para tener fechas
+        PeriodoAcademico periodo = gateway.findPeriodByTagAndYear(tag, year);
+        if (periodo != null) {
+            // AUTO-REGISTRO: Asegurar que el estudiante tenga su registro financiero real
+            // Si es nuevo o no tiene registro, heredamos su último grupo conocido
+            Long ultimoGrupo = gateway.findUltimoGrupoId(student.getId());
+            gateway.registrarMatriculaFinanciera(student.getId(), periodo.getId(), ultimoGrupo, false);
+            
+            if (periodo.getFechaInicio() != null && periodo.getFechaFin() != null) {
+                List<BecaDescuentoInfo> becas = gateway.findBecasDescuentosByEstudianteAndPeriodo(
+                        student.getId(), periodo.getFechaInicio(), periodo.getFechaFin());
+                student.setBecasDescuentos(becas != null ? becas : List.of());
+            } else {
+                student.setBecasDescuentos(List.of());
+            }
+        } else {
+            student.setBecasDescuentos(List.of());
+        }
+        
+        // Resolver estado de pago global desde la nueva tabla financiera (ya asegurada arriba)
+        student.setEstaPago(gateway.findEstadoPago(student.getId(), tag, year));
+        // Resolver grupo real
+        student.setGrupoNombre(gateway.findGrupoNombre(student.getId(), tag, year));
+        // Resolver descuento de voto real
+        student.setAplicaVotacion(gateway.tieneSolicitudCerVotoAprobada(student.getCodigo()));
         // valorEnSMLV se recalcula en el caller después de setear semestreFinanciero
     }
+
 
     private Integer calculateSmlv(Estudiante student) {
         Integer semester = student.getSemestreFinanciero();
         if (semester == null) return null;
         if (semester <= 4) return 6;
+        if (semester >= 9) return 1; // Semester 9+ always pays 1 SMLV according to Acuerdo 044/2012
         List<Materia> subjects = flatSubjects(student.getMatriculasAcademicas());
-        if (subjects.isEmpty()) return null;
+        if (subjects.isEmpty()) return 6; 
         boolean onlyTg2 = subjects.stream().allMatch(m -> isTg2(m.getMateria()));
         return onlyTg2 ? 1 : 6;
     }
@@ -123,34 +153,16 @@ public class ManageEnrolledStudentsUseCaseImpl implements ManageEnrolledStudents
         return n.contains("trabajo de grado 2") || n.contains("trabajo de grado ii");
     }
 
-    /**
-     * Calcula el semestre del estudiante en función de su período de ingreso
-     * y el período que se está consultando.
-     *
-     * Fórmula: semestre = (añoConsulta - añoIngreso) * 2 + (tagConsulta - tagIngreso) + 1
-     *
-     * Ejemplos:
-     *   ingreso 2024-1, consulta 2024-1 → semestre 1
-     *   ingreso 2024-1, consulta 2024-2 → semestre 2
-     *   ingreso 2024-1, consulta 2025-1 → semestre 3
-     *   ingreso 2024-1, consulta 2025-2 → semestre 4
-     *
-     * @param periodoIngreso formato "YYYY-N" (ej: "2024-1")
-     * @param tagConsulta    tagPeriodo del período consultado (1 o 2)
-     * @param añoConsulta    año del período consultado
-     * @return semestre calculado, o 0 si no se puede calcular
-     */
-    private int calculateSemester(String periodoIngreso, Integer tagConsulta, Integer añoConsulta) {
-        if (periodoIngreso == null || tagConsulta == null || añoConsulta == null) return 0;
+    // Calcula el semestre del estudiante basandose en el periodo de ingreso
+    private int calculateSemester(String periodoIngreso, Integer tagConsulta, Integer anioConsulta) {
+        if (periodoIngreso == null || tagConsulta == null || anioConsulta == null) return 0;
         String[] parts = periodoIngreso.split("-");
         if (parts.length != 2) return 0;
         try {
-            int añoIngreso = Integer.parseInt(parts[0].trim());
+            int anioIngreso = Integer.parseInt(parts[0].trim());
             int tagIngreso = Integer.parseInt(parts[1].trim());
-            int semestre = (añoConsulta - añoIngreso) * 2 + (tagConsulta - tagIngreso) + 1;
-            if (semestre <= 0) return 0;
-            // El semestre académico no supera 4 (máximo de la maestría)
-            return Math.min(semestre, 4);
+            int semReal = (anioConsulta - anioIngreso) * 2 + (tagConsulta - tagIngreso) + 1;
+            return Math.max(semReal, 0);
         } catch (NumberFormatException e) {
             return 0;
         }

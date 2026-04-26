@@ -1,4 +1,4 @@
-package co.edu.unicauca.matricula_financiera.domain.models;
+package co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,11 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Beca {
-    private String dedicacion;
+public class BecaDescuentoInfoResponse {
     private String tipo;
-    private String entidadAsociada;
-    private String titulo;
     private Float porcentaje;
-    private Estudiante estudiante;
+    private String resolucion;
+    private String estado;
+    private String avaladoConcejo;
 }
