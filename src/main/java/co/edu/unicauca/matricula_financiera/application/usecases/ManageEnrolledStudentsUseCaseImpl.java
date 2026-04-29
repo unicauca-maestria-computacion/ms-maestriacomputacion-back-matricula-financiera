@@ -105,7 +105,7 @@ public class ManageEnrolledStudentsUseCaseImpl implements ManageEnrolledStudents
             // AUTO-REGISTRO: Asegurar que el estudiante tenga su registro financiero real
             // Si es nuevo o no tiene registro, heredamos su último grupo conocido
             Long ultimoGrupo = gateway.findUltimoGrupoId(student.getId());
-            gateway.registrarMatriculaFinanciera(student.getId(), periodo.getId(), ultimoGrupo, false);
+            gateway.registrarMatriculaFinanciera(student.getId(), periodo.getId(), ultimoGrupo, null);
             
             if (periodo.getFechaInicio() != null && periodo.getFechaFin() != null) {
                 List<BecaDescuentoInfo> becas = gateway.findBecasDescuentosByEstudianteAndPeriodo(

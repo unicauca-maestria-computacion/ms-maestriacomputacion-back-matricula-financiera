@@ -20,8 +20,8 @@ public interface StudentGatewayPort {
     List<MatriculaAcademica> findAcademicEnrollments(Long studentId, Integer tag, Integer year);
     boolean tieneSolicitudCerVotoAprobada(String codigoEstudiante);
     List<BecaDescuentoInfo> findBecasDescuentosByEstudianteAndPeriodo(Long estudianteId, LocalDate periodoFechaInicio, LocalDate periodoFechaFin);
-    boolean findEstadoPago(Long studentId, Integer tagPeriodo, Integer anio);
-    void registrarMatriculaFinanciera(Long estudianteId, Long periodoId, Long grupoId, boolean estaPago);
+    Boolean findEstadoPago(Long studentId, Integer tagPeriodo, Integer anio);
+    void registrarMatriculaFinanciera(Long estudianteId, Long periodoId, Long grupoId, Boolean estaPago);
     Long findUltimoGrupoId(Long estudianteId);
     String findGrupoNombre(Long estudianteId, Integer tag, Integer year);
 }

@@ -104,12 +104,12 @@ public class StudentGatewayAdapter implements StudentGatewayPort {
     }
 
     @Override
-    public boolean findEstadoPago(Long studentId, Integer tagPeriodo, Integer anio) {
+    public Boolean findEstadoPago(Long studentId, Integer tagPeriodo, Integer anio) {
         return bdCompartida.findEstadoPagoPorEstudianteYPeriodo(studentId, tagPeriodo, anio);
     }
 
     @Override
-    public void registrarMatriculaFinanciera(Long estudianteId, Long periodoId, Long grupoId, boolean estaPago) {
+    public void registrarMatriculaFinanciera(Long estudianteId, Long periodoId, Long grupoId, Boolean estaPago) {
         bdCompartida.registrarMatriculaFinanciera(estudianteId, periodoId, grupoId, estaPago);
     }
 

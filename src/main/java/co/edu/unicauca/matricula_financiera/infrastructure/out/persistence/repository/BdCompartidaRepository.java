@@ -159,17 +159,17 @@ public class BdCompartidaRepository {
         }, estudianteId, periodoFechaInicio);
     }
 
-    public boolean findEstadoPagoPorEstudianteYPeriodo(Long estudianteId, Integer tagPeriodo, Integer anio) {
+    public Boolean findEstadoPagoPorEstudianteYPeriodo(Long estudianteId, Integer tagPeriodo, Integer anio) {
         String sql = """
-                SELECT COUNT(*) FROM matricula_financiera mf
+                SELECT mf.esta_pago FROM matricula_financiera mf
                 JOIN periodo_academico p ON mf.periodo_id = p.id
                 WHERE mf.estudiante_id = ? 
                   AND p.tag_periodo = ? 
                   AND YEAR(p.fecha_inicio) = ?
-                  AND mf.esta_pago = TRUE
+                LIMIT 1
                 """;
-        Integer count = jdbc.queryForObject(sql, Integer.class, estudianteId, tagPeriodo, anio);
-        return count != null && count > 0;
+        List<Boolean> result = jdbc.query(sql, (rs, i) -> rs.getObject("esta_pago", Boolean.class), estudianteId, tagPeriodo, anio);
+        return result.isEmpty() ? null : result.get(0);
     }
 
     public String findGrupoNombrePorEstudianteYPeriodo(Long estudianteId, Integer tagPeriodo, Integer anio) {
@@ -186,7 +186,7 @@ public class BdCompartidaRepository {
         return result.isEmpty() ? null : result.get(0);
     }
 
-    public void registrarMatriculaFinanciera(Long estudianteId, Long periodoId, Long grupoId, boolean estaPago) {
+    public void registrarMatriculaFinanciera(Long estudianteId, Long periodoId, Long grupoId, Boolean estaPago) {
         String sql = """
                 INSERT INTO matricula_financiera (estudiante_id, periodo_id, grupo_id, esta_pago)
                 VALUES (?, ?, ?, ?)
