@@ -32,6 +32,8 @@ public interface StudentHttpMapper {
     List<PeriodoAcademicoResponse> fromListPeriodosToResponse(List<PeriodoAcademico> periodos);
 
     @Mapping(target = "materias", expression = "java(flatMaterias(estudiante))")
+    @Mapping(target = "becas", expression = "java(mapBecasDescuentos(estudiante))")
+    @Mapping(target = "descuentos", expression = "java(mapBecasDescuentos(estudiante))")
     @Mapping(target = "becasDescuentos", expression = "java(mapBecasDescuentos(estudiante))")
     StudentResponse fromEstudianteToResponse(Estudiante estudiante);
 

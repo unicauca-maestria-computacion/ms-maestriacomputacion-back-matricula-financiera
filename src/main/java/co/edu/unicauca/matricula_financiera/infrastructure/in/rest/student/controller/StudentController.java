@@ -58,4 +58,9 @@ public class StudentController {
         List<PeriodoAcademico> periods = useCase.getAcademicPeriods();
         return ResponseEntity.ok(mapper.fromListPeriodosToResponse(periods));
     }
+
+    @PostMapping("/iniciar")
+    public ResponseEntity<Boolean> iniciarNuevaMatriculaFinanciera() {
+        return ResponseEntity.ok(Boolean.TRUE);
+    }
 }

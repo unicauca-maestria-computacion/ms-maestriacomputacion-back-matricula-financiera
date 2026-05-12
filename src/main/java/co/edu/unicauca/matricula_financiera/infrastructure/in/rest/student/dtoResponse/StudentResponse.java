@@ -24,6 +24,8 @@ public class StudentResponse {
     private Boolean esEgresadoUnicauca;
     private Boolean aplicaVotacion;
     private List<MateriaResponse> materias;
+    private List<BecaDescuentoInfoResponse> becas;
+    private List<BecaDescuentoInfoResponse> descuentos;
     private List<BecaDescuentoInfoResponse> becasDescuentos;
     private Boolean estaPago;
     private String grupoNombre;
