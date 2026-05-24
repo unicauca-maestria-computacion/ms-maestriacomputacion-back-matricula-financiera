@@ -1,15 +1,11 @@
 name: CD Practica Profesional matricula-financiera
 
 on:
-  workflow_run:
-    workflows: ['CI Practica Profesional matricula-financiera']
-    types:
-      - completed
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: self-hosted
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
 

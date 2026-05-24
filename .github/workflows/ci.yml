@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    permissions:
+      actions: write
 
     steps:
       - uses: actions/checkout@v4
@@ -35,3 +37,8 @@ jobs:
         run: |
           docker build -t $DOCKER_USERNAME/practica-profesional-matricula-financiera:latest .
           docker push $DOCKER_USERNAME/practica-profesional-matricula-financiera:latest
+
+      - name: Trigger CD
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run cd.yml --ref despliegue-de-pruebas
