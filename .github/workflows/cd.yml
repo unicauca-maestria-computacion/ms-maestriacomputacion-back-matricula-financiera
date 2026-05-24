@@ -87,6 +87,10 @@ jobs:
             -e EUREKA_CLIENT_SERVICEURL_DEFAULTZONE="http://directory:8761/eureka/" \
             -e DB_URL="jdbc:mysql://mysql-db:3306/maestria-computacion?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Bogota" \
             -e SPRING_DATASOURCE_URL="jdbc:mysql://mysql-db:3306/maestria-computacion?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Bogota" \
+            -e DB_USERNAME="${{ secrets.BD_USER }}" \
+            -e DB_PASSWORD="${{ secrets.BD_PASSWORD }}" \
+            -e SPRING_DATASOURCE_USERNAME="${{ secrets.BD_USER }}" \
+            -e SPRING_DATASOURCE_PASSWORD="${{ secrets.BD_PASSWORD }}" \
             -e JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8 -XX:+UseSerialGC -Xms64m -Xmx256m" \
             $DOCKER_USERNAME/practica-profesional-matricula-financiera:latest
 
