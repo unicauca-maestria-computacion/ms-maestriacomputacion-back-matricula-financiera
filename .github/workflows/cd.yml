@@ -44,10 +44,18 @@ jobs:
               --network "maestria-network" \
               -p 3307:3306 \
               --restart "always" \
+              --memory "512m" \
+              --memory-swap "1g" \
               -e MYSQL_ROOT_PASSWORD="root" \
               -e MYSQL_DATABASE="maestria-computacion" \
               -v mysql_maestria_data:/var/lib/mysql \
-              mariadb:10.6 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+              mysql:8.0 \
+                --character-set-server=utf8mb4 \
+                --collation-server=utf8mb4_unicode_ci \
+                --innodb_buffer_pool_size=128M \
+                --innodb_log_buffer_size=4M \
+                --max-allowed-packet=128M \
+                --skip-name-resolve
           else
             echo "mysql-db container exists, ensuring it is started..."
             docker start mysql-db
