@@ -112,8 +112,8 @@ jobs:
           # Remove stopped containers first
           docker ps -a --filter "label=service=matricula-financiera" --filter "status=exited" -q | xargs -r docker rm 2>/dev/null || true
           # Prune dangling images (catches <none>:<none> orphans)
-          echo "Pruning dangling images..."
-          docker image prune -f
+                    echo 'Removing dangling images for this service...'
+          docker images --filter 'dangling=true' --filter 'label=service=matricula-financiera' -q | xargs -r docker rmi -f 2>/dev/null || true
           # Remove old tagged images (keep only latest)
           CURRENT_IMAGE=$(docker inspect matricula-financiera-service --format='{{.Image}}' 2>/dev/null || echo "")
           if [ -n "$CURRENT_IMAGE" ]; then
