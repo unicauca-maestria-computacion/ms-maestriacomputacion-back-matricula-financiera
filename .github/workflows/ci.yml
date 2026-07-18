@@ -33,7 +33,14 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t $DOCKER_USERNAME/practica-profesional-matricula-financiera:latest .
+          TAG=$(date +%Y%m%d-%H%M%S)-${GITHUB_SHA::7}
+          docker build \
+            --label "project=practica-u" \
+            --label "service=matricula-financiera" \
+            -t $DOCKER_USERNAME/practica-profesional-matricula-financiera:$TAG \
+            -t $DOCKER_USERNAME/practica-profesional-matricula-financiera:latest \
+            .
+          docker push $DOCKER_USERNAME/practica-profesional-matricula-financiera:$TAG
           docker push $DOCKER_USERNAME/practica-profesional-matricula-financiera:latest
 
   deploy:
@@ -144,21 +151,33 @@ jobs:
       - name: Clean Old Images of This Service
         run: |
           echo "Cleaning old images for matricula-financiera service..."
+          # Remove stopped containers first
+          docker ps -a --filter "label=service=matricula-financiera" --filter "status=exited" -q | xargs -r docker rm 2>/dev/null || true
+          # Prune dangling images (catches <none>:<none> orphans)
+          echo "Pruning dangling images..."
+          docker image prune -f
+          # Remove old tagged images (keep only latest)
           CURRENT_IMAGE=$(docker inspect matricula-financiera-service --format='{{.Image}}' 2>/dev/null || echo "")
           if [ -n "$CURRENT_IMAGE" ]; then
-            docker images --filter "label=service=matricula-financiera" --format "{{.ID}}" | while read img; do
-              if [ "$img" != "${CURRENT_IMAGE:7:12}" ]; then
-                echo "Removing old image: $img"
-                docker rmi -f $img 2>/dev/null || true
+            CURRENT_SHORT="${CURRENT_IMAGE:7:12}"
+            docker images $DOCKER_USERNAME/practica-profesional-matricula-financiera --format "{{.ID}} {{.Tag}}" | while read img_id tag; do
+              if [ "$tag" != "latest" ] && [ "${img_id:0:12}" != "$CURRENT_SHORT" ]; then
+                echo "Removing old tagged image: $img_id ($tag)"
+                docker rmi -f "$img_id" 2>/dev/null || true
               fi
             done
           fi
-          docker images $DOCKER_USERNAME/practica-profesional-matricula-financiera --format "{{.ID}} {{.Tag}}" | grep -v "latest" | awk '{print $1}' | xargs -r docker rmi -f 2>/dev/null || true
 
       - name: Clean Stopped Containers of This Service
         run: |
           echo "Cleaning stopped containers for matricula-financiera service..."
           docker ps -a --filter "label=service=matricula-financiera" --filter "status=exited" -q | xargs -r docker rm 2>/dev/null || true
+
+      - name: Clean Docker Build Cache
+        if: always()
+        run: |
+          echo "Cleaning Docker build cache older than 7 days..."
+          docker builder prune --filter "until=168h" -f || true
 
       - name: Final Status Check
         run: |
