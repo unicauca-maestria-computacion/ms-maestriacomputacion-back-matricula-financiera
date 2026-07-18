@@ -58,24 +58,41 @@ jobs:
 
       - name: Ensure Eureka Discovery Server is Running (directory)
         run: |
-          if [ -z "$(docker ps -a -q -f name=directory-service)" ]; then
-            echo "Creating and starting directory-service container..."
-            docker run -d \
-              --name "directory-service" \
-              --network "maestria-network" \
-              --network-alias "directory" \
-              -p 8765:8761 \
-              --restart "always" \
-              --memory "256m" \
-              --memory-swap "256m" \
-              --label project="practica-u" \
-              --label service="directory" \
-              -e JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8 -XX:+UseSerialGC -Xms64m -Xmx192m" \
-              $DOCKER_USERNAME/practica-profesional-directory:latest
-          else
-            echo "directory-service container exists, ensuring it is started..."
-            docker start directory-service
+          echo "Ensuring Eureka Discovery Server is running (retry up to 5 times)..."
+          for attempt in 1 2 3 4 5; do
+            if docker ps --format '{{"{{"}}.Names{{"}}"}}' | grep -q '^directory-service$'; then
+              echo "Eureka Discovery Server is already running (found on attempt $attempt)."
+              break
+            fi
+            echo "Eureka not running, attempt $attempt/5..."
+            if [ -z "$(docker ps -a -q -f name=directory-service)" ]; then
+              echo "Creating directory-service container..."
+              docker run -d \
+                --name "directory-service" \
+                --network "maestria-network" \
+                --network-alias "directory" \
+                -p 8765:8761 \
+                --restart "always" \
+                --memory "256m" \
+                --memory-swap "256m" \
+                --label project="practica-u" \
+                --label service="directory" \
+                -e JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8 -XX:+UseSerialGC -Xms64m -Xmx192m" \
+                $DOCKER_USERNAME/practica-profesional-directory:latest
+            else
+              echo "Starting existing directory-service container..."
+              docker start directory-service 2>/dev/null || true
+            fi
+            if [ $attempt -lt 5 ]; then
+              echo "Waiting 6s before next attempt..."
+              sleep 6
+            fi
+          done
+          if ! docker ps --format '{{"{{"}}.Names{{"}}"}}' | grep -q '^directory-service$'; then
+            echo "ERROR: Eureka Discovery Server failed to start after 5 attempts."
+            exit 1
           fi
+          echo "Eureka Discovery Server is ready."
 
       - name: Ensure MySQL Database Container is Running
         run: |
