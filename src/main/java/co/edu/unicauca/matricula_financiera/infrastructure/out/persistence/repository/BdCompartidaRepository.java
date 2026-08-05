@@ -207,7 +207,7 @@ public class BdCompartidaRepository {
     }
 
     public List<ReporteCentroPostgradosRow> findReporteCentroPostgrados(Long periodoId) {
-        String sql = \"\"\"
+        String sql = """
                 SELECT
                     p.identificacion,
                     CONCAT(p.nombre, ' ', p.apellido) AS nombreCompleto,
@@ -238,7 +238,7 @@ public class BdCompartidaRepository {
                     AND sec.avalado_concejo = 'Si'
                 WHERE m.id_periodo = ?
                 ORDER BY p.apellido, p.nombre, a.nombre
-                \"\"\";
+                """;
         return jdbc.query(sql, (rs, i) -> {
             ReporteCentroPostgradosRow row = new ReporteCentroPostgradosRow();
             row.setIdentificacion(rs.getString("identificacion"));
