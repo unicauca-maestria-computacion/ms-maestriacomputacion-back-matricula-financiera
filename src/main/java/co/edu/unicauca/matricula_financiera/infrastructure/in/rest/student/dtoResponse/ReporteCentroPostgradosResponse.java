@@ -3,6 +3,18 @@ package co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoR
 import java.util.List;
 
 public class ReporteCentroPostgradosResponse {
+
+    public static class MateriaReporte {
+        private String codigoOid;
+        private String materia;
+        public MateriaReporte() {}
+        public MateriaReporte(String codigoOid, String materia) { this.codigoOid = codigoOid; this.materia = materia; }
+        public String getCodigoOid() { return codigoOid; }
+        public void setCodigoOid(String codigoOid) { this.codigoOid = codigoOid; }
+        public String getMateria() { return materia; }
+        public void setMateria(String materia) { this.materia = materia; }
+    }
+
     private String identificacion;
     private String nombreCompleto;
     private double valorMatriculaSMMLV;
@@ -12,7 +24,7 @@ public class ReporteCentroPostgradosResponse {
     private String resolucionBeca;
     private Double porcentajeBeca;
     private int semestreAcademico;
-    private List<String> materias;
+    private List<MateriaReporte> materias;
     private String docenteEncargado;
     private String grupoClase;
 
@@ -36,8 +48,8 @@ public class ReporteCentroPostgradosResponse {
     public void setPorcentajeBeca(Double porcentajeBeca) { this.porcentajeBeca = porcentajeBeca; }
     public int getSemestreAcademico() { return semestreAcademico; }
     public void setSemestreAcademico(int semestreAcademico) { this.semestreAcademico = semestreAcademico; }
-    public List<String> getMaterias() { return materias; }
-    public void setMaterias(List<String> materias) { this.materias = materias; }
+    public List<MateriaReporte> getMaterias() { return materias; }
+    public void setMaterias(List<MateriaReporte> materias) { this.materias = materias; }
     public String getDocenteEncargado() { return docenteEncargado; }
     public void setDocenteEncargado(String docenteEncargado) { this.docenteEncargado = docenteEncargado; }
     public String getGrupoClase() { return grupoClase; }

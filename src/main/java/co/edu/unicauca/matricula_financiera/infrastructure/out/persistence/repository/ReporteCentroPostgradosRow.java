@@ -10,6 +10,7 @@ public class ReporteCentroPostgradosRow {
     private String resolucionBeca;
     private Double porcentajeBeca;
     private int semestreAcademico;
+    private String codigoOid;
     private String materia;
     private String docente;
     private String grupo;
@@ -32,6 +33,8 @@ public class ReporteCentroPostgradosRow {
     public void setPorcentajeBeca(Double porcentajeBeca) { this.porcentajeBeca = porcentajeBeca; }
     public int getSemestreAcademico() { return semestreAcademico; }
     public void setSemestreAcademico(int semestreAcademico) { this.semestreAcademico = semestreAcademico; }
+    public String getCodigoOid() { return codigoOid; }
+    public void setCodigoOid(String codigoOid) { this.codigoOid = codigoOid; }
     public String getMateria() { return materia; }
     public void setMateria(String materia) { this.materia = materia; }
     public String getDocente() { return docente; }

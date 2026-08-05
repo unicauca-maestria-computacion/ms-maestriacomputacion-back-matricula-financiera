@@ -94,8 +94,15 @@ public class StudentController {
                 r.setMaterias(new ArrayList<>());
                 map.put(key, r);
             }
-            if (row.getMateria() != null && !row.getMateria().isEmpty() && !r.getMaterias().contains(row.getMateria())) {
-                r.getMaterias().add(row.getMateria());
+            if (row.getMateria() != null && !row.getMateria().isEmpty()) {
+                ReporteCentroPostgradosResponse.MateriaReporte mr = new ReporteCentroPostgradosResponse.MateriaReporte(
+                    row.getCodigoOid(), row.getMateria()
+                );
+                boolean exists = r.getMaterias().stream()
+                    .anyMatch(m -> mr.getMateria().equals(m.getMateria()));
+                if (!exists) {
+                    r.getMaterias().add(mr);
+                }
             }
             // Si hay un docente en otra fila, usar ese
             if (r.getDocenteEncargado() == null || r.getDocenteEncargado().isEmpty()) {

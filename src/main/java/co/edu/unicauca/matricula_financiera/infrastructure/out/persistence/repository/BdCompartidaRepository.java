@@ -218,6 +218,7 @@ public class BdCompartidaRepository {
                     sec.resolucion AS resolucionBeca,
                     sec.porcentaje AS porcentajeBeca,
                     COALESCE(e.semestre_academico, 0) AS semestreAcademico,
+                    COALESCE(a.codigo_asignatura, '') AS codigoOid,
                     COALESCE(a.nombre_asignatura, '') AS materia,
                     COALESCE(CONCAT(dp.nombre, ' ', dp.apellido), '') AS docente,
                     COALESCE(c.grupocurso, '') AS grupo
@@ -250,6 +251,7 @@ public class BdCompartidaRepository {
             row.setResolucionBeca(rs.getString("resolucionBeca"));
             row.setPorcentajeBeca(rs.getObject("porcentajeBeca") != null ? rs.getDouble("porcentajeBeca") : null);
             row.setSemestreAcademico(rs.getInt("semestreAcademico"));
+            row.setCodigoOid(rs.getString("codigoOid"));
             row.setMateria(rs.getString("materia"));
             row.setDocente(rs.getString("docente"));
             row.setGrupo(rs.getString("grupo"));
