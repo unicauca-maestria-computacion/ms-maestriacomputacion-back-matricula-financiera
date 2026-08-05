@@ -218,7 +218,7 @@ public class BdCompartidaRepository {
                     sec.resolucion AS resolucionBeca,
                     sec.porcentaje AS porcentajeBeca,
                     COALESCE(e.semestre_academico, 0) AS semestreAcademico,
-                    COALESCE(a.nombre, '') AS materia,
+                    COALESCE(a.nombre_asignatura, '') AS materia,
                     COALESCE(CONCAT(dp.nombre, ' ', dp.apellido), '') AS docente,
                     COALESCE(c.grupocurso, '') AS grupo
                 FROM matriculas m
@@ -237,7 +237,7 @@ public class BdCompartidaRepository {
                 LEFT JOIN solicitudes_en_concejo sec ON sec.id_solicitud = s.id
                     AND sec.avalado_concejo = 'Si'
                 WHERE m.id_periodo = ?
-                ORDER BY p.apellido, p.nombre, a.nombre
+                ORDER BY p.apellido, p.nombre, a.nombre_asignatura
                 """;
         return jdbc.query(sql, (rs, i) -> {
             ReporteCentroPostgradosRow row = new ReporteCentroPostgradosRow();
