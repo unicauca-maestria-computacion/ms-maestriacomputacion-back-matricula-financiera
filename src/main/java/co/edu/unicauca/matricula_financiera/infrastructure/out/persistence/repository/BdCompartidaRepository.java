@@ -28,6 +28,7 @@ public class BdCompartidaRepository {
                 SELECT id, tag_periodo, YEAR(fecha_inicio) AS anio,
                        fecha_inicio, fecha_fin, fecha_fin_matricula, descripcion, estado
                 FROM periodo_academico
+                WHERE estado IN ('ACTIVO', 'FINALIZADO')
                 ORDER BY fecha_inicio DESC
                 """;
         return jdbc.query(sql, (rs, i) -> mapPeriodo(rs));
