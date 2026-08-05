@@ -5,8 +5,11 @@ import co.edu.unicauca.matricula_financiera.domain.models.PeriodoAcademico;
 import co.edu.unicauca.matricula_financiera.domain.ports.in.ManageEnrolledStudentsUseCase;
 import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoRequest.PeriodoAcademicoRequest;
 import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoResponse.PeriodoAcademicoResponse;
+import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoResponse.ReporteCentroPostgradosResponse;
 import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.dtoResponse.StudentResponse;
 import co.edu.unicauca.matricula_financiera.infrastructure.in.rest.student.mapper.StudentHttpMapper;
+import co.edu.unicauca.matricula_financiera.infrastructure.out.persistence.repository.BdCompartidaRepository;
+import co.edu.unicauca.matricula_financiera.infrastructure.out.persistence.repository.ReporteCentroPostgradosRow;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/gestion-matricula-financiera")
@@ -29,6 +33,7 @@ public class StudentController {
 
     private final ManageEnrolledStudentsUseCase useCase;
     private final StudentHttpMapper mapper;
+    private final BdCompartidaRepository bdCompartidaRepository;
 
     @PostMapping("/estudiantes")
     public ResponseEntity<List<StudentResponse>> getStudentsByPeriod(
@@ -62,5 +67,42 @@ public class StudentController {
     @PostMapping("/iniciar")
     public ResponseEntity<Boolean> iniciarNuevaMatriculaFinanciera() {
         return ResponseEntity.ok(Boolean.TRUE);
+    }
+
+    @GetMapping("/reporte-centro-postgrados/{periodoId}")
+    public ResponseEntity<List<ReporteCentroPostgradosResponse>> getReporteCentroPostgrados(@PathVariable Long periodoId) {
+        List<ReporteCentroPostgradosRow> rows = bdCompartidaRepository.findReporteCentroPostgrados(periodoId);
+
+        // Agrupar por estudiante para consolidar materias
+        Map<String, ReporteCentroPostgradosResponse> map = new LinkedHashMap<>();
+        for (ReporteCentroPostgradosRow row : rows) {
+            String key = row.getIdentificacion();
+            ReporteCentroPostgradosResponse r = map.get(key);
+            if (r == null) {
+                r = new ReporteCentroPostgradosResponse();
+                r.setIdentificacion(row.getIdentificacion());
+                r.setNombreCompleto(row.getNombreCompleto());
+                r.setValorMatriculaSMMLV(row.getValorMatriculaSMMLV());
+                r.setSemestreFinanciero(row.getSemestreFinanciero());
+                r.setAplicaDescuentoVoto(row.isAplicaDescuentoVoto());
+                r.setAplicaDescuentoEgresado(row.isAplicaDescuentoEgresado());
+                r.setResolucionBeca(row.getResolucionBeca());
+                r.setPorcentajeBeca(row.getPorcentajeBeca());
+                r.setSemestreAcademico(row.getSemestreAcademico());
+                r.setDocenteEncargado(row.getDocente());
+                r.setGrupoClase(row.getGrupo());
+                r.setMaterias(new ArrayList<>());
+                map.put(key, r);
+            }
+            if (row.getMateria() != null && !row.getMateria().isEmpty() && !r.getMaterias().contains(row.getMateria())) {
+                r.getMaterias().add(row.getMateria());
+            }
+            // Si hay un docente en otra fila, usar ese
+            if (r.getDocenteEncargado() == null || r.getDocenteEncargado().isEmpty()) {
+                r.setDocenteEncargado(row.getDocente());
+                r.setGrupoClase(row.getGrupo());
+            }
+        }
+        return ResponseEntity.ok(new ArrayList<>(map.values()));
     }
 }

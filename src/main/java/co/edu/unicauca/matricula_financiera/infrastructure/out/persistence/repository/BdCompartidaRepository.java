@@ -205,6 +205,57 @@ public class BdCompartidaRepository {
         return ids.isEmpty() ? null : ids.get(0);
     }
 
+    public List<ReporteCentroPostgradosRow> findReporteCentroPostgrados(Long periodoId) {
+        String sql = \"\"\"
+                SELECT
+                    p.identificacion,
+                    CONCAT(p.nombre, ' ', p.apellido) AS nombreCompleto,
+                    COALESCE(cfg.valor_smlv, 0) AS valorMatriculaSMMLV,
+                    COALESCE(m.semestre_financiero, 0) AS semestreFinanciero,
+                    EXISTS(SELECT 1 FROM descuentos d WHERE d.id_estudiante = e.id AND d.tipodes = 'VOTACION' AND d.estado = TRUE LIMIT 1) AS aplicaVoto,
+                    e.es_egresado_unicauca AS aplicaEgresado,
+                    sec.resolucion AS resolucionBeca,
+                    sec.porcentaje AS porcentajeBeca,
+                    COALESCE(m.semestre_academico, 0) AS semestreAcademico,
+                    COALESCE(a.nombre, '') AS materia,
+                    COALESCE(CONCAT(dp.nombre, ' ', dp.apellido), '') AS docente,
+                    COALESCE(c.grupocurso, '') AS grupo
+                FROM matriculas m
+                JOIN estudiantes e ON e.id = m.id_estudiante
+                JOIN personas p ON p.id = e.id_persona
+                LEFT JOIN cursos c ON c.id = m.id_curso
+                LEFT JOIN asignaturas a ON a.id = c.id_asignatura
+                LEFT JOIN curso_docente cd ON cd.id_curso = c.id
+                LEFT JOIN docentes d ON d.id = cd.id_docente
+                LEFT JOIN personas dp ON dp.id = d.id_persona
+                LEFT JOIN configuracion_reporte_financiero cfg ON cfg.periodo_academico_id = ?
+                LEFT JOIN solicitudes s ON s.id_estudiante = e.id
+                    AND s.estado IN ('Resuelta', 'Aprobada')
+                LEFT JOIN solicitud_beca_descuento sbd ON sbd.id_solicitud = s.id
+                    AND sbd.tipo LIKE '%Beca%'
+                LEFT JOIN solicitudes_en_concejo sec ON sec.id_solicitud = s.id
+                    AND sec.avalado_concejo = 'Si'
+                WHERE m.id_periodo = ?
+                ORDER BY p.apellido, p.nombre, a.nombre
+                \"\"\";
+        return jdbc.query(sql, (rs, i) -> {
+            ReporteCentroPostgradosRow row = new ReporteCentroPostgradosRow();
+            row.setIdentificacion(rs.getString("identificacion"));
+            row.setNombreCompleto(rs.getString("nombreCompleto"));
+            row.setValorMatriculaSMMLV(rs.getDouble("valorMatriculaSMMLV"));
+            row.setSemestreFinanciero(rs.getInt("semestreFinanciero"));
+            row.setAplicaDescuentoVoto(rs.getBoolean("aplicaVoto"));
+            row.setAplicaDescuentoEgresado(rs.getBoolean("aplicaEgresado"));
+            row.setResolucionBeca(rs.getString("resolucionBeca"));
+            row.setPorcentajeBeca(rs.getObject("porcentajeBeca") != null ? rs.getDouble("porcentajeBeca") : null);
+            row.setSemestreAcademico(rs.getInt("semestreAcademico"));
+            row.setMateria(rs.getString("materia"));
+            row.setDocente(rs.getString("docente"));
+            row.setGrupo(rs.getString("grupo"));
+            return row;
+        }, periodoId, periodoId);
+    }
+
     private PeriodoAcademico mapPeriodo(java.sql.ResultSet rs) throws java.sql.SQLException {
         PeriodoAcademico p = new PeriodoAcademico();
         p.setId(rs.getLong("id"));
