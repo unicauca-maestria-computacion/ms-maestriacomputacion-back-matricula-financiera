@@ -151,8 +151,9 @@ jobs:
             --network-alias "matricula-financiera-service" \
             --network-alias "matricula-financiera" \
             --restart "always" \
-            --memory "384m" \
-            --memory-swap "768m" \
+            --cpus "0.3" \
+            --memory "256m" \
+            --memory-swap "384m" \
             --label project="practica-u" \
             --label service="matricula-financiera" \
             -e SPRING_PROFILES_ACTIVE="dev" \
@@ -162,7 +163,7 @@ jobs:
             -e SPRING_DATASOURCE_URL="jdbc:mysql://mysql-db:3306/maestria-computacion?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Bogota" \
             -e SPRING_DATASOURCE_USERNAME="$BD_USER" \
             -e SPRING_DATASOURCE_PASSWORD="$BD_PASSWORD" \
-            -e JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8 -XX:+UseSerialGC -Xms64m -Xmx192m" \
+            -e JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8 -XX:+UseSerialGC -Xms32m -Xmx160m" \
             $DOCKER_USERNAME/practica-profesional-matricula-financiera:latest
 
       - name: Clean Old Images of This Service
