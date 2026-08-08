@@ -133,9 +133,9 @@ jobs:
             --network-alias "matricula-financiera-service" \
             --network-alias "matricula-financiera" \
             --restart "always" \
-            --cpus "0.5" \
-            --memory "320m" \
-            --memory-swap "320m" \
+            --cpus "0.3" \
+            --memory "256m" \
+            --memory-swap "256m" \
             --label project="practica-u" \
             --label service="matricula-financiera" \
             -e SPRING_PROFILES_ACTIVE="dev" \
@@ -147,7 +147,7 @@ jobs:
             -e DB_PASSWORD="${{ secrets.BD_PASSWORD }}" \
             -e SPRING_DATASOURCE_USERNAME="${{ secrets.BD_USER }}" \
             -e SPRING_DATASOURCE_PASSWORD="${{ secrets.BD_PASSWORD }}" \
-            -e JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8 -XX:+UseSerialGC -Xms64m -Xmx256m" \
+            -e JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8 -XX:+UseSerialGC -Xms32m -Xmx176m" \
             $DOCKER_USERNAME/practica-profesional-matricula-financiera:latest
 
       - name: Clean Old Images of This Service
