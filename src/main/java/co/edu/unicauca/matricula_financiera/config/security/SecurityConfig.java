@@ -51,6 +51,10 @@ public class SecurityConfig {
                     .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers("/actuator/health", "/actuator/info").permitAll()
+                            // Documentacion OpenAPI: la especificacion describe el contrato
+                            // publico de la API, no expone datos financieros ni personales.
+                            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+                            .permitAll()
                             .anyRequest().authenticated())
                     .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}))
                     .build();

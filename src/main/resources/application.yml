@@ -15,3 +15,16 @@ management:
     web:
       exposure:
         include: health,info
+
+# Documentacion OpenAPI generada por springdoc a partir del codigo.
+#   Especificacion : http://localhost:8092/v3/api-docs
+#   Swagger UI     : http://localhost:8092/swagger-ui.html
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true
+  default-produces-media-type: application/json
