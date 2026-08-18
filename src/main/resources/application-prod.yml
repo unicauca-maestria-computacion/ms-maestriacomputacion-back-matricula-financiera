@@ -13,4 +13,8 @@ spring:
     show-sql: false
 
 app:
-  jwt-secret: ${JWT_SECRET:secretKey123}
+  # Sin valor por omision de forma deliberada: si la variable no se
+  # suministra, la aplicacion no arranca. Un valor por defecto en el
+  # perfil de produccion supondria firmar y validar los tokens con una
+  # clave presente en el repositorio y por tanto conocida.
+  jwt-secret: ${JWT_SECRET}
