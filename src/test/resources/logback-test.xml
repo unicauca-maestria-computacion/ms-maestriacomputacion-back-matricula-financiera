@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Configuracion de registro para la ejecucion de pruebas.
+
+  Silencia el importador de clases de ArchUnit. Sobre una maquina virtual mas
+  reciente que la version de destino del proyecto, ArchUnit no consigue leer
+  los archivos de clase de la propia biblioteca estandar de Java, emite una
+  advertencia con traza completa por cada uno y recurre a una importacion
+  simplificada. Las reglas de arquitectura se evaluan igualmente sobre las
+  clases del proyecto, compiladas para Java 17, de modo que su resultado no se
+  ve afectado; lo unico que se pierde es legibilidad de la salida.
+-->
+<configuration>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Advertencias del importador de ArchUnit sobre clases del JDK -->
+    <logger name="com.tngtech.archunit.core.importer" level="OFF"/>
+
+    <!-- Ruido de arranque de Testcontainers y del cliente de Docker -->
+    <logger name="org.testcontainers" level="WARN"/>
+    <logger name="com.github.dockerjava" level="WARN"/>
+    <logger name="tc" level="WARN"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

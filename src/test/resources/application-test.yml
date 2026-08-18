@@ -1,0 +1,27 @@
+# Configuracion para las pruebas de integracion.
+# La URL, el usuario y la contrasena de la base de datos los inyecta
+# Testcontainers en tiempo de ejecucion desde BaseIntegrationTest.
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema-test.sql
+      data-locations: classpath:db/data-test.sql
+  messages:
+    basename: ValidationMessages
+    encoding: UTF-8
+  devtools:
+    restart:
+      enabled: false
+
+logging:
+  level:
+    org.testcontainers: WARN
+    com.github.dockerjava: WARN
