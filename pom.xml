@@ -85,6 +85,15 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Utilidades de prueba de Spring Security: permiten construir una
+		     peticion con un token y unas autoridades determinadas sin
+		     necesidad de un emisor real. -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
